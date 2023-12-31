@@ -1,18 +1,14 @@
 ﻿
 using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
     public class UserServices
     {
-        private static List<User> _seedUsersList = new()
+
+        private List<User> _seedUsersList = new()
         {
             new User()
             {
@@ -31,7 +27,7 @@ namespace bislerium_cafe_pos.Services
 
 
 
-        public static void SaveAllUsersInJsonFile(List<User> users)
+        public void SaveAllUsersInJsonFile(List<User> users)
         {
             string appDataDirPath = AppUtils.GetAppDataDirectory();
             string appUsersFilePath = AppUtils.GetAppUsersFilePath();
@@ -46,7 +42,7 @@ namespace bislerium_cafe_pos.Services
             File.WriteAllText(appUsersFilePath, json);
         }
 
-         public static List<User> GetAllUsersFromJsonFile()
+         public List<User> GetAllUsersFromJsonFile()
         {
             string appUsersFilePath = AppUtils.GetAppUsersFilePath();
 
@@ -61,7 +57,7 @@ namespace bislerium_cafe_pos.Services
         }
         
 
-        public static void SeedUsers()
+        public void SeedUsers()
         {
             var users = GetAllUsersFromJsonFile();
 
@@ -71,7 +67,7 @@ namespace bislerium_cafe_pos.Services
             }
         }
        
-        public static User LogIn(string userName, string password, string role) 
+        public User LogIn(string userName, string password, string role) 
         {
             const string errorMessage = "Invalid username or password";
 
