@@ -9,20 +9,16 @@
     <p>Has User Changed Initial Password: @_globalState.CurrentUser.HasInitialPasswordChanged</p>
 }
 
-@_error
-
-
 @code {
 
     [CascadingParameter]
+    private Action<string> SetAppBarTitle { get; set; }
+
+    [CascadingParameter]
     private GlobalState _globalState { get; set; }
-    private string _appBarTitle { get; set; }
 
 
-    private string _error { get; set; } = "";
-
-
-    protected override void OnInitialized()
+    protected sealed override void OnInitialized()
     {
         if (_globalState.CurrentUser == null)
         {
@@ -31,11 +27,9 @@
         else
         {
             NavManager.NavigateTo("/");
+
+            SetAppBarTitle.Invoke("Dashboard");
         }
-
-
-        _appBarTitle = "Dashboard";
-
     }
 
 }

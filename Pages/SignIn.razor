@@ -58,7 +58,7 @@
 
     private string _path = AppUtils.GetDesktopDirectoryPath();
 
-    [CascadingParameter(Name = "GlobalState")]
+    [CascadingParameter]
     private GlobalState _globalState { get; set; }
 
     private string _errorMessage = "";
