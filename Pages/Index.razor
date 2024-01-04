@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+
+@if (_globalState.CurrentUser != null)
+{
+    <p>UserName: @_globalState.CurrentUser.UserName</p>
+    <p>Role: @_globalState.CurrentUser.Role</p>
+    <p>Password: @_globalState.CurrentUser.Password</p>
+    <p>Has User Changed Initial Password: @_globalState.CurrentUser.HasInitialPasswordChanged</p>
+}
+
+@_error
+
+
+@code {
+
+    [CascadingParameter]
+    private GlobalState _globalState { get; set; }
+    private string _appBarTitle { get; set; }
+
+
+    private string _error { get; set; } = "";
+
+
+    protected override void OnInitialized()
+    {
+        if (_globalState.CurrentUser == null)
+        {
+            NavManager.NavigateTo("/sign-in");
+        }
+        else
+        {
+            NavManager.NavigateTo("/");
+        }
+
+
+        _appBarTitle = "Dashboard";
+
+    }
+
+}
+

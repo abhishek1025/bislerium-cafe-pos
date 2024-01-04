@@ -1,22 +1,30 @@
 ﻿@inherits LayoutComponentBase
-@inject 
-<MudThemeProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@inject UserServices UserServices
+@layout ParentLayout
 
-<MudLayout>
-    <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        My Application
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu/>
-    </MudDrawer>
-    <MudMainContent>
-        @Body
-    </MudMainContent>
-</MudLayout>
+
+<MudAppBar>
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    <h4>@_appBarTitle</h4>
+</MudAppBar>
+
+<MudDrawer @bind-Open="@_drawerOpen" >
+    <NavMenu />
+</MudDrawer>
+
+<MudMainContent>
+    <div class="px-5 pt-6">
+        <CascadingValue Value="_appBarTitle" Name="AppBarTitle">
+            @Body
+        </CascadingValue>
+    </div>
+</MudMainContent>
+
+
+
 @code {
+    private string _appBarTitle { set; get; }
+
     bool _drawerOpen = true;
 
     void DrawerToggle()
@@ -24,9 +32,5 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    protected override void OnInitialized()
-    {
-        UserServices.SeedUsers();
-    }
 }
 

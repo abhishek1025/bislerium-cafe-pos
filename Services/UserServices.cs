@@ -1,6 +1,7 @@
 ﻿
 using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
+using System.Data;
 using System.Text.Json;
 
 namespace bislerium_cafe_pos.Services
@@ -29,7 +30,7 @@ namespace bislerium_cafe_pos.Services
 
         public void SaveAllUsersInJsonFile(List<User> users)
         {
-            string appDataDirPath = AppUtils.GetAppDataDirectory();
+            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string appUsersFilePath = AppUtils.GetAppUsersFilePath();
 
             if (!Directory.Exists(appDataDirPath))
@@ -60,8 +61,8 @@ namespace bislerium_cafe_pos.Services
         public void SeedUsers()
         {
             var users = GetAllUsersFromJsonFile();
-
-            if(users.Count == 0)
+            //SaveAllUsersInJsonFile(_seedUsersList);
+            if (users.Count == 0)
             {
                 SaveAllUsersInJsonFile(_seedUsersList);
             }
@@ -83,5 +84,33 @@ namespace bislerium_cafe_pos.Services
             return user ?? throw new Exception(errorMessage);
         }
 
+        public User ChangePassword(User currentUser, string newPassword, string currentPassword)
+        {
+            
+
+            List<User> users = GetAllUsersFromJsonFile();
+
+            User user = users.FirstOrDefault(u => u.UserName == currentUser.UserName && u.Role.ToString() == currentUser.Role.ToString());
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            bool isCurrentPasswordValid = user.Password == currentPassword;
+
+            if (!isCurrentPasswordValid)
+            {
+                throw new Exception("Incorrect Current password");
+            };
+
+
+            user.Password = newPassword;
+            user.HasInitialPasswordChanged = true;
+
+            SaveAllUsersInJsonFile(users);
+
+            return user;            
+        }
     }
 }

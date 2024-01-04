@@ -9,14 +9,19 @@ namespace bislerium_cafe_pos.Utils
     internal class AppUtils
     {
 
-        public static string GetAppDataDirectory()
+        public static string GetDesktopDirectoryPath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "bislerium-cafe-pos-data");
+            return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         }
 
         public static string GetAppUsersFilePath()
         {
-            return Path.Combine(GetAppDataDirectory(), "users.json");
+            return Path.Combine(GetDesktopDirectoryPath(), "users.json");
+        }
+
+        public static string GetCofeeListFilePath()
+        {
+            return Path.Combine(GetDesktopDirectoryPath(), "coffeeList.json");
         }
     }
 }

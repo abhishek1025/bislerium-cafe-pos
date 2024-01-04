@@ -1,0 +1,104 @@
+@page "/sign-in"
+
+@inject UserServices UserServices
+@inject NavigationManager NavManager
+@layout EmptyLayout
+
+    
+<div class="d-flex justify-center align-items-center vh-100">
+
+    <div class="border border-light shadow-lg w-50 px-8 py-10">
+        <CafeTitle /> 
+
+        @* Form *@
+        <div class="d-flex flex-column gap-y-3 mt-8">
+
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+            }
+            else if (!string.IsNullOrEmpty(_sucessMessage))
+            {
+                <MudAlert Severity="Severity.Success">@_sucessMessage</MudAlert>
+            }
+
+
+
+            <MudTextField @bind-Value="_username" Label="User Name" Variant="Variant.Outlined"></MudTextField>
+
+            <MudTextField @bind-Value="_password" Label="Passsword" Variant="Variant.Outlined" InputType="@InputType.Password"></MudTextField>
+
+
+            <MudSelect @bind-Value="_role" T="string" Label="Role" AnchorOrigin="Origin.BottomCenter">
+                @foreach (Role role in Enum.GetValues(typeof(Role)))
+                {
+                    <MudSelectItem Value="@role.ToString()" />
+                }
+            </MudSelect>
+
+            <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" @onclick="_logInHandler"
+                        Class="mt-5">
+                Log In
+            </MudButton>
+
+            <h1>@_path</h1>
+
+        </div>
+    </div>
+
+</div>
+
+
+    
+
+
+
+@code{
+
+    private string _path = AppUtils.GetDesktopDirectoryPath();
+
+    [CascadingParameter(Name = "GlobalState")]
+    private GlobalState _globalState { get; set; }
+
+    private string _errorMessage = "";
+    private string _sucessMessage = "";
+
+    private string _username { get; set; } = "administrator";
+    private string _password { get; set; } = "12345";
+    private string _role { get; set; } = "Administrator";
+
+    private User _currentUser { get; set; }
+
+    private void _logInHandler()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password) || string.IsNullOrEmpty(_role))
+            {
+                _errorMessage = "Please fill up all the fields";
+                return;
+            }
+
+            _currentUser = UserServices.LogIn(_username, _password, _role);
+            _globalState.CurrentUser = _currentUser;
+
+
+            if (_currentUser != null)
+            {
+                NavManager.NavigateTo(_currentUser.HasInitialPasswordChanged ? "/" : "/change-password");
+            }
+
+            _errorMessage = "";
+            _sucessMessage = "Authentication Sucessfull";
+            _username = "";
+            _password = "";
+            _role = "";
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
+    }
+}
