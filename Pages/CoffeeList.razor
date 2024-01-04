@@ -1,0 +1,94 @@
+
+@page "/coffee-list"
+@inject CofeeServices CofeeServices
+@inject NavigationManager NavigationManager
+
+
+<MudTable 
+    Items="@Elements" 
+    Dense="@dense" 
+    Hover="@hover" 
+    Bordered="@bordered" 
+    Striped="@striped"
+    Filter="new Func<Coffee,bool>(FilterFunc1)">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Coffee List</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+
+    <HeaderContent>
+        <MudTh>Coffee Type</MudTh>
+        <MudTh>Price</MudTh>
+        <MudTh>Action</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="CoffeeType">@context.CoffeeType</MudTd>
+        <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
+        <MudTd DataLabel="Action">
+                <MudFab Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.Edit"
+                 Disabled="@isUserStaff"
+                 OnClick="@(() => handleEdit(context.Id))" />
+        </MudTd>
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+ </MudTable>
+
+    @* <div class="d-flex flex-wrap mt-4">
+        <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+        <MudSpacer />
+
+    </div>*@
+   
+@code {
+    [CascadingParameter]
+    private GlobalState _globalState{ get; set;}
+
+    private bool isUserStaff { get; set; }
+
+    private bool _displayModal { get; set; } = false;
+
+    private void handleEdit(Guid cofeeID)
+    {
+        NavigationManager.NavigateTo($"/coffee-list/{cofeeID}");
+    }
+
+    private bool dense = true;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string _searchString1 = "";
+
+    private IEnumerable<Coffee> Elements = new List<Coffee>();
+
+    protected override void OnInitialized()
+    {
+        Elements =  CofeeServices.GetCoffeeListFromJsonFile();
+        isUserStaff = _globalState.CurrentUser.Role.ToString() == "Staff";
+    }
+
+    private bool FilterFunc1(Coffee element) => FilterFunc(element, _searchString1);
+
+    private bool FilterFunc(Coffee element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        if (element.CoffeeType.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+       
+        if (element.Price.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

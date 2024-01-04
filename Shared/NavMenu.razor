@@ -15,7 +15,13 @@
                 <MudNavMenu Bordered="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2 mt-10">
                     <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="/sign-in" Icon="@Icons.Material.Filled.Login">Sign In</MudNavLink>
+
+                    <MudNavGroup Title="Items" Icon="@Icons.Material.Filled.Category" Expanded="true">
+                    <MudNavLink Match="NavLinkMatch.All" Href="/coffee-list" Icon="@Icons.Material.Filled.LocalCafe">Coffee List</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/add-ins-list" Icon="@Icons.Material.Filled.AddBox">Add-ins List</MudNavLink>
+                    </MudNavGroup>
+
+                @*<MudNavLink Match="NavLinkMatch.All" Href="/sign-in" Icon="@Icons.Material.Filled.Login">Sign In</MudNavLink>*@
                 </MudNavMenu>
 
             </MudPaper>

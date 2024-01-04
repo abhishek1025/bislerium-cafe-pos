@@ -1,0 +1,106 @@
+@page "/coffee-list/{coffeeID}"
+@inject NavigationManager NavigationManager
+@inject CofeeServices CofeeServices
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Class="mb-5" OnClick="goBack">
+    Back
+</MudButton>
+
+<h1>Edit Coffee Details</h1>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+}
+else if (!string.IsNullOrEmpty(_sucessMessage))
+{
+    <MudAlert Severity="Severity.Success">@_sucessMessage</MudAlert>
+}
+
+@if (_coffee != null)
+{
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-6 d-flex flex-column gap-y-3">
+                <MudTextField @bind-Value="_currentPassword" Label="Current Password" Variant="Variant.Outlined" InputType="@InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="_coffee.CoffeeType" Label="Coffee Type" Variant="Variant.Outlined"></MudTextField>
+                <MudTextField @bind-Value="_coffee.Price" Label="Price" Variant="Variant.Outlined"></MudTextField>
+                <div>
+                    <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Class="mt-5" OnClick="handleUpdateCoffeeDetails">
+                        Edit Coffee
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <MudAlert Severity="Severity.Error">Invalid Coffee ID</MudAlert>
+}
+
+
+
+
+@code {
+    [Parameter]
+    public string coffeeID { get; set; }
+
+    [CascadingParameter]
+    private GlobalState _globalState { get; set; }
+
+    private string _errorMessage { get; set; } = "";
+    private string _sucessMessage { get; set; } = "";
+
+    private Coffee _coffee { get; set; }
+
+    private string _currentPassword { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _coffee = CofeeServices.GetCofeeDetailsByID(coffeeID);
+    }
+
+    protected void goBack()
+    {
+        NavigationManager.NavigateTo("/coffee-list");
+    }
+
+    protected void handleUpdateCoffeeDetails(){
+        try
+        {
+            if (String.IsNullOrEmpty(_currentPassword))
+            {
+                _errorMessage = "Please enter your current password";
+                return;
+            }
+
+            if (String.IsNullOrEmpty(_coffee.CoffeeType))
+            {
+                _errorMessage = "Please enter coffee type";
+                return;
+            }
+
+            if (_coffee.Price <= 0)
+            {
+                _errorMessage = "Please enter valid price";
+                return;
+            }
+
+            if(_currentPassword != _globalState.CurrentUser.Password)
+            {
+                _errorMessage = "Invalid current password";
+                return;
+            }
+
+            CofeeServices.UpdateCofeeDetails(_coffee);
+
+            _errorMessage = "";
+            _sucessMessage = "Coffee details updated successfully";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+}

@@ -18,7 +18,7 @@
     private GlobalState _globalState { get; set; }
 
 
-    protected sealed override void OnInitialized()
+    protected override void OnInitialized()
     {
         if (_globalState.CurrentUser == null)
         {
@@ -28,7 +28,7 @@
         {
             NavManager.NavigateTo("/");
 
-            SetAppBarTitle.Invoke("Dashboard");
+           SetAppBarTitle.Invoke("Dashboard");
         }
     }
 

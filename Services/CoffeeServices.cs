@@ -5,8 +5,8 @@ using bislerium_cafe_pos.Utils;
 
 namespace bislerium_cafe_pos.Services
 {
-	public class CofeeServices
-	{
+    public class CofeeServices
+    {
 
         // Creating a list of Coffee objects with prices in Nepalese Rupees (NPR)
         private List<Coffee> _coffeeList = new List<Coffee>
@@ -55,14 +55,39 @@ namespace bislerium_cafe_pos.Services
 
 
         public void SeedCofeeDetails()
-		{
+        {
             List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
 
-            if(coffeeList.Count == 0)
+            if (coffeeList.Count == 0)
             {
                 SaveCoffeeListInJsonFile(_coffeeList);
             }
-		}
-	}
+        }
+
+        public Coffee GetCofeeDetailsByID(String coffeeID)
+        {
+            List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
+            Coffee coffee = coffeeList.FirstOrDefault(coffee => coffee.Id.ToString() == coffeeID);
+            return coffee;
+        }
+
+        public void UpdateCofeeDetails(Coffee coffee)
+        {
+            List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
+
+            Coffee coffeeToUpdate = coffeeList.FirstOrDefault(_coffee => _coffee.Id.ToString() == coffee.Id.ToString());
+
+            if (coffeeToUpdate == null)
+            {
+                throw new Exception("Coffee not found");
+            }
+
+            coffeeToUpdate.CoffeeType = coffee.CoffeeType;
+            coffeeToUpdate.Price = coffee.Price;
+
+            SaveCoffeeListInJsonFile(coffeeList);
+        }
+       
+    }
 }
 
