@@ -1,5 +1,5 @@
-@page "/coffee-list"
-@inject CoffeeServices CoffeeServices
+@page "/addIn-items"
+@inject AddInItemsServices AddInItemsServices
 @inject NavigationManager NavigationManager
 @inject OrderItemServices OrderItemServices
 
@@ -8,28 +8,25 @@
           Hover="@hover"
           Bordered="@bordered"
           Striped="@striped"
-          Filter="new Func<Coffee,bool>(FilterFunc1)">
+          Filter="new Func<AddInItem,bool>(FilterFunc1)">
 
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Coffee List</MudText>
+        <MudText>Add-In Items List</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="_searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
 
 
     <HeaderContent>
-        <MudTh>Coffee Type</MudTh>
+        <MudTh>Name</MudTh>
         <MudTh>Price</MudTh>
         <MudTh>Action</MudTh>
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd DataLabel="CoffeeType">@context.CoffeeType</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
             <MudTd DataLabel="Action">
-                @* <MudFab Size="Size.Small" Color="Color.Success" StartIcon="@Icons.Material.Filled.Edit"
-                        Disabled="@isUserStaff"
-                        OnClick="@(() => handleEdit(context.Id))" /> *@
 
                 <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Edit" aria-label="Edit" OnClick="@(() => handleEdit(context.Id))"></MudIconButton>
 
@@ -55,11 +52,12 @@
     [CascadingParameter]
     private GlobalState _globalState { get; set; }
 
-
     private bool isUserStaff { get; set; }
 
-    private bool _displayModal { get; set; } = false;
-
+    private void handleEdit(Guid addInItemID)
+    {
+        NavigationManager.NavigateTo($"/addIn-items/{addInItemID}");
+    }
 
     private bool dense = true;
     private bool hover = true;
@@ -67,33 +65,28 @@
     private bool bordered = true;
     private string _searchString1 = "";
 
-    private IEnumerable<Coffee> Elements = new List<Coffee>();
+    private IEnumerable<AddInItem> Elements = new List<AddInItem>();
 
     protected override void OnInitialized()
     {
-        Elements = CoffeeServices.GetCoffeeListFromJsonFile();
+        Elements = AddInItemsServices.GetAddInItemsListListFromJsonFile();
         isUserStaff = _globalState.CurrentUser.Role.ToString() == "Staff";
         _globalState.AppBarTitle = "Items";
     }
 
-    private void handleEdit(Guid cofeeID)
+    private void handleAddItemInCart(Guid addInItemID, double itemPrice)
     {
-        NavigationManager.NavigateTo($"/coffee-list/{cofeeID}");
+        OrderItemServices.AddItemInOrderItemsList(_globalState.OrderItems, addInItemID, "add-in", itemPrice);
     }
 
-    private void handleAddItemInCart(Guid coffeeID, double itemPrice)
-    {
-        OrderItemServices.AddItemInOrderItemsList(_globalState.OrderItems, coffeeID, "coffee", itemPrice);
-    }
+    private bool FilterFunc1(AddInItem element) => FilterFunc(element, _searchString1);
 
-    private bool FilterFunc1(Coffee element) => FilterFunc(element, _searchString1);
-
-    private bool FilterFunc(Coffee element, string searchString)
+    private bool FilterFunc(AddInItem element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
 
-        if (element.CoffeeType.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
         if (element.Price.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))

@@ -12,9 +12,6 @@
 @code {
 
     [CascadingParameter]
-    private Action<string> SetAppBarTitle { get; set; }
-
-    [CascadingParameter]
     private GlobalState _globalState { get; set; }
 
 
@@ -28,7 +25,7 @@
         {
             NavManager.NavigateTo("/");
 
-           SetAppBarTitle.Invoke("Dashboard");
+            _globalState.AppBarTitle = "Dashboard";
         }
     }
 

@@ -2,38 +2,40 @@
 
 
 <div class="py-4 vh-100 bg-transparent">
-    
 
-        <div class="d-flex flex-column justify-content-between h-100">
 
-            <MudPaper Elevation="0" Class="h-100" >
+    <div class="d-flex flex-column justify-content-between h-100">
 
-                <CafeTitle />
+        <MudPaper Elevation="0" Class="h-100">
 
-                <MudDivider Class="my-2" />
+            <CafeTitle />
 
-                <MudNavMenu Bordered="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2 mt-10">
-                    <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
+            <MudDivider Class="my-2" />
 
-                    <MudNavGroup Title="Items" Icon="@Icons.Material.Filled.Category" Expanded="true">
+            <MudNavMenu Bordered="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2 mt-10">
+                <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
+
+                <MudNavGroup Title="Items" Icon="@Icons.Material.Filled.Category" Expanded="true">
                     <MudNavLink Match="NavLinkMatch.All" Href="/coffee-list" Icon="@Icons.Material.Filled.LocalCafe">Coffee List</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="/add-ins-list" Icon="@Icons.Material.Filled.AddBox">Add-ins List</MudNavLink>
-                    </MudNavGroup>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/addIn-items" Icon="@Icons.Material.Filled.AddBox">Add-ins List</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavLink Match="NavLinkMatch.All" Href="/cart-items" Icon="@Icons.Material.Filled.ShoppingCart">Order Cart</MudNavLink>
 
                 @*<MudNavLink Match="NavLinkMatch.All" Href="/sign-in" Icon="@Icons.Material.Filled.Login">Sign In</MudNavLink>*@
-                </MudNavMenu>
-
-            </MudPaper>
-
-
-            <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
-                <MudNavLink Href="/sign-out" Icon="@Icons.Material.Filled.Login">Sign Out</MudNavLink>
             </MudNavMenu>
 
-        </div>
-        
-   
+        </MudPaper>
+
+
+        <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+            <MudNavLink Href="/sign-out" Icon="@Icons.Material.Filled.Login">Sign Out</MudNavLink>
+        </MudNavMenu>
+
+    </div>
+
+
 
 </div>
 

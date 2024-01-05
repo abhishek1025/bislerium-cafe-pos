@@ -5,23 +5,23 @@ using bislerium_cafe_pos.Utils;
 
 namespace bislerium_cafe_pos.Services
 {
-    public class CofeeServices
+    public class CoffeeServices
     {
 
         // Creating a list of Coffee objects with prices in Nepalese Rupees (NPR)
-        private List<Coffee> _coffeeList = new List<Coffee>
+        private readonly List<Coffee> _coffeeList = new()
         {
-            new Coffee { CoffeeType = "Cappuccino", Price = 150.0 },
-            new Coffee { CoffeeType = "Latte", Price = 170.0 },
-            new Coffee { CoffeeType = "Espresso", Price = 120.0 },
-            new Coffee { CoffeeType = "Americano", Price = 140.0 },
-            new Coffee { CoffeeType = "Mocha", Price = 180.0 },
-            new Coffee { CoffeeType = "Macchiato", Price = 160.0 },
-            new Coffee { CoffeeType = "Flat White", Price = 160.0 },
-            new Coffee { CoffeeType = "Affogato", Price = 200.0 },
-            new Coffee { CoffeeType = "Irish Coffee", Price = 190.0 },
-            new Coffee { CoffeeType = "Turkish Coffee", Price = 130.0 },
-            new Coffee { CoffeeType = "Ristretto", Price = 110.0 }
+            new() { CoffeeType = "Cappuccino", Price = 150.0 },
+            new() { CoffeeType = "Latte", Price = 170.0 },
+            new() { CoffeeType = "Espresso", Price = 120.0 },
+            new() { CoffeeType = "Americano", Price = 140.0 },
+            new() { CoffeeType = "Mocha", Price = 180.0 },
+            new() { CoffeeType = "Macchiato", Price = 160.0 },
+            new() { CoffeeType = "Flat White", Price = 160.0 },
+            new() { CoffeeType = "Affogato", Price = 200.0 },
+            new() { CoffeeType = "Irish Coffee", Price = 190.0 },
+            new() { CoffeeType = "Turkish Coffee", Price = 130.0 },
+            new() { CoffeeType = "Ristretto", Price = 110.0 }
         };
 
         public void SaveCoffeeListInJsonFile(List<Coffee> coffeeList)
@@ -87,7 +87,7 @@ namespace bislerium_cafe_pos.Services
 
             SaveCoffeeListInJsonFile(coffeeList);
         }
-       
+
     }
 }
 

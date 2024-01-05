@@ -1,6 +1,6 @@
 @page "/coffee-list/{coffeeID}"
 @inject NavigationManager NavigationManager
-@inject CofeeServices CofeeServices
+@inject CoffeeServices CoffeeServices
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Class="mb-5" OnClick="goBack">
     Back
@@ -27,7 +27,7 @@ else if (!string.IsNullOrEmpty(_sucessMessage))
                 <MudTextField @bind-Value="_coffee.Price" Label="Price" Variant="Variant.Outlined"></MudTextField>
                 <div>
                     <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Class="mt-5" OnClick="handleUpdateCoffeeDetails">
-                        Edit Coffee
+                        Update Coffee
                     </MudButton>
                 </div>
             </div>
@@ -58,7 +58,7 @@ else
 
     protected override void OnInitialized()
     {
-        _coffee = CofeeServices.GetCofeeDetailsByID(coffeeID);
+        _coffee = CoffeeServices.GetCofeeDetailsByID(coffeeID);
     }
 
     protected void goBack()
@@ -93,7 +93,7 @@ else
                 return;
             }
 
-            CofeeServices.UpdateCofeeDetails(_coffee);
+            CoffeeServices.UpdateCofeeDetails(_coffee);
 
             _errorMessage = "";
             _sucessMessage = "Coffee details updated successfully";
