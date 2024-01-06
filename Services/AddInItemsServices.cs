@@ -26,6 +26,24 @@ namespace bislerium_cafe_pos.Services
             new() { Name = "Special Syrup Blend", Price = 28.0 }
         };
 
+        public void AddAddInItem(String name, double price)
+
+        {
+            AddInItem addInItem = new()
+            {
+                Name = name,
+                Price = price
+            };
+
+            List<AddInItem> addInItemList = GetAddInItemsListListFromJsonFile();
+
+            addInItemList.Add(addInItem);
+
+            SaveAddInItemsListInJsonFile(addInItemList);
+
+        }
+
+
 
         public void SaveAddInItemsListInJsonFile(List<AddInItem> addInItemList)
         {
@@ -89,6 +107,20 @@ namespace bislerium_cafe_pos.Services
             addInItemToUpdate.Price = addInItem.Price;
 
             SaveAddInItemsListInJsonFile(addInItemsList);
+        }
+
+        public List<AddInItem> DeletAddInItem(Guid addInItemID)
+        {
+            List<AddInItem> addInItemsList = GetAddInItemsListListFromJsonFile();
+            AddInItem addInItem = addInItemsList.FirstOrDefault(item => item.Id.ToString() == addInItemID.ToString()); 
+
+            if(addInItem != null)
+            {
+                addInItemsList.Remove(addInItem);
+                SaveAddInItemsListInJsonFile(addInItemsList);
+            }
+
+            return addInItemsList;
         }
     }
 }

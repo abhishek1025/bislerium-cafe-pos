@@ -11,54 +11,25 @@ namespace bislerium_cafe_pos.Services
 {
     public class OrderItemServices
     {
-        public List<OrderItem> GetOrderItemsFromJsonFile()
+      
+        public void AddItemInOrderItemsList(List<OrderItem> _orderItems, Guid itemID, string itemName, String itemType, Double itemPrice)
         {
-            string orderItemsListFilePath = AppUtils.GetOrderItemListFilePath();
-
-            if (!File.Exists(orderItemsListFilePath))
-            {
-                return new List<OrderItem>();
-            }
-
-            var json = File.ReadAllText(orderItemsListFilePath);
-
-            return JsonSerializer.Deserialize<List<OrderItem>>(json);
-        }
-
-        public void SaveOrderItemsInJsonFile(List<OrderItem> _orderItems)
-        {
-            List<OrderItem> currentOrderItems = GetOrderItemsFromJsonFile();
-            currentOrderItems.AddRange(_orderItems);
-
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
-            string orderItemsListFilePath = AppUtils.GetOrderItemListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
-
-            var json = JsonSerializer.Serialize(currentOrderItems);
-            File.WriteAllText(orderItemsListFilePath, json);
-        }
-
-        public void AddItemInOrderItemsList(List<OrderItem> _orderItems, Guid itemID, String ItemType, Double ItemPrice)
-        {
-            OrderItem orderItem = _orderItems.FirstOrDefault(x => x.ItemID == itemID && x.ItemType == ItemType);
+            OrderItem orderItem = _orderItems.FirstOrDefault(x => x.ItemID.ToString() == itemID.ToString() && x.ItemType == itemType);
 
             if (orderItem != null)
             {
                 orderItem.Quantity++;
-                orderItem.TotalPrice = orderItem.Quantity * ItemPrice;
+                orderItem.TotalPrice = orderItem.Quantity * itemPrice;
             }
 
             orderItem = new()
             {
                 ItemID = itemID,
-                ItemType = ItemType,
+                ItemName = itemName,
+                ItemType = itemType,
                 Quantity = 1,
-                Price = ItemPrice,
-                TotalPrice = ItemPrice
+                Price = itemPrice,
+                TotalPrice = itemPrice
             };
 
             _orderItems.Add(orderItem);
@@ -70,10 +41,10 @@ namespace bislerium_cafe_pos.Services
         {
             OrderItem orderItem = _orderItems.FirstOrDefault(x => x.OrderItemID == orderItemID);
 
-           if(orderItem != null)
+            if (orderItem != null)
             {
                 _orderItems.Remove(orderItem);
-            }   
+            }
         }
 
         public void ManageQuantityOfOrderItem(List<OrderItem> _orderItems, Guid orderItemID, String action)
@@ -93,6 +64,19 @@ namespace bislerium_cafe_pos.Services
                     orderItem.TotalPrice = orderItem.Quantity * orderItem.Price;
                 }
             }
-        }   
+        }
+
+        public double CalculateTotalAmount(IEnumerable<OrderItem> Elements)
+        {
+            double totalAmount = 0;
+
+            foreach (var item in Elements)
+            {
+                totalAmount += item.TotalPrice;
+            }
+            return totalAmount;
+        }
     }
+
+    
 }

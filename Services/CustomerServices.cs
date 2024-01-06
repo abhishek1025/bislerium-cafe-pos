@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
-    public class CustomerService
+    public class CustomerServices
     {
         public List<Customer> GetCustomerListFromJsonFile()
         {
-            string customersFilePath = AppUtils.GetAppUsersFilePath();
+            string customersFilePath = AppUtils.GetCustomersListFilePath();
 
             if (!File.Exists(customersFilePath))
             {
@@ -32,10 +32,23 @@ namespace bislerium_cafe_pos.Services
             return customer;
         }
 
-        public void SaveCustomerListToJsonFile(List<Customer> customers)
+    
+
+        public void AddCustomer(Customer _customer)
         {
+
+            Customer isCustomerExists = GetCustomerByPhoneNum(_customer.CustomerPhoneNum);
+
+            if (isCustomerExists != null)
+            {
+                throw new Exception("Customer Already exists");
+            }
+
+            List<Customer> customers = GetCustomerListFromJsonFile();
+            customers.Add(_customer);
+
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
-            string customerListFilePath = AppUtils.GetAppUsersFilePath();
+            string customerListFilePath = AppUtils.GetCustomersListFilePath();
 
             if (!Directory.Exists(appDataDirPath))
             {
@@ -47,21 +60,24 @@ namespace bislerium_cafe_pos.Services
             File.WriteAllText(customerListFilePath, json);
         }
 
-        public void AddCustomer(Customer _customer)
+        public void UpdateCustomerOrderCout(string customerPhoneNum)
         {
-           
-            Customer customer = GetCustomerByPhoneNum(_customer.CustomerPhoneNum);
+            List<Customer> customers = GetCustomerListFromJsonFile();
+            Customer customer = customers.FirstOrDefault(c => c.CustomerPhoneNum == customerPhoneNum);
 
-            if(customer != null)
+            customer.OrderCount++;
+
+            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
+            string customerListFilePath = AppUtils.GetCustomersListFilePath();
+
+            if (!Directory.Exists(appDataDirPath))
             {
-                throw new Exception("Customer Doesn't exists");
+                Directory.CreateDirectory(appDataDirPath);
             }
 
-            List<Customer> customers = GetCustomerListFromJsonFile();
+            var json = JsonSerializer.Serialize(customers);
 
-            customers.Add(_customer);
-
-            SaveCustomerListToJsonFile(customers);
+            File.WriteAllText(customerListFilePath, json);
         }
     }
 }

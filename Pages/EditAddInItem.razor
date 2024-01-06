@@ -1,6 +1,7 @@
 @page "/addIn-items/{addInItemID}"
 @inject NavigationManager NavigationManager
 @inject AddInItemsServices AddInItemsServices
+@inject ISnackbar Snackbar
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Class="mb-5" OnClick="goBack">
     Back
@@ -11,10 +12,6 @@
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
     <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
-}
-else if (!string.IsNullOrEmpty(_sucessMessage))
-{
-    <MudAlert Severity="Severity.Success">@_sucessMessage</MudAlert>
 }
 
 @if (_addInItem != null)
@@ -50,7 +47,6 @@ else
     private GlobalState _globalState { get; set; }
 
     private string _errorMessage { get; set; } = "";
-    private string _sucessMessage { get; set; } = "";
 
     private AddInItem _addInItem { get; set; }
 
@@ -97,7 +93,9 @@ else
             AddInItemsServices.UpdateAddInItemDetails(_addInItem);
 
             _errorMessage = "";
-            _sucessMessage = "Add-In Item details updated successfully";
+            
+            Snackbar.Add("Add-In Item details updated successfully", Severity.Success);
+            goBack();
         }
         catch (Exception ex)
         {

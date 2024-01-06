@@ -2,64 +2,82 @@
 @inject CoffeeServices CoffeeServices
 @inject OrderItemServices OrderItemServices
 @inject AddInItemsServices AddInItemsServices
-
-<MudTable Items="@Elements"
-          Dense="@dense"
-          Hover="@hover"
-          Bordered="@bordered"
-          Striped="@striped">
-
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Order Items List</MudText>
-        <MudSpacer />
-        <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@_totalAmount</b></MudText>
-    </ToolBarContent>
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 
-    <HeaderContent>
-        <MudTh>Item Name</MudTh>
-        <MudTh>Item Type</MudTh>
-        <MudTh>Price</MudTh>
-        <MudTh>Quantity</MudTh>
-        <MudTh>Total</MudTh>
-        <MudTh>Action</MudTh>
-    </HeaderContent>
+@if (Elements.Count() == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Cart is Empty. Add Some Items !!</MudAlert>
+} else
+{
 
-    <RowTemplate>
-        <MudTd DataLabel="CoffeeType">@getOrderItemName(context.ItemID, context.ItemType)</MudTd>
-            <MudTd DataLabel="Item Type">@context.ItemType</MudTd>
-            <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
+    <MudTable Items="@Elements"
+              Dense="@dense"
+              Hover="@hover"
+              Bordered="@bordered"
+              Striped="@striped">
 
-            <MudTd DataLabel="Quantity">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Order Items List</MudText>
+            <MudSpacer />
+            <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@_totalAmount</b></MudText>
+        </ToolBarContent>
 
-                <MudIconButton Icon="@Icons.Material.Filled.Remove" aria-label="subtract" OnClick="@(() => ManageQuantity(context.OrderItemID, "subtract"))"></MudIconButton>
 
-                <span>
-                    @context.Quantity
+        <HeaderContent>
+            <MudTh>Item Name</MudTh>
+            <MudTh>Item Type</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total</MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+
+
+        <RowTemplate>
+            <MudTd DataLabel="CoffeeType">@context.ItemName</MudTd>
+                <MudTd DataLabel="Item Type">@context.ItemType</MudTd>
+                <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
+
+                <MudTd DataLabel="Quantity">
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" aria-label="subtract" OnClick="@(() => ManageQuantity(context.OrderItemID, "subtract"))"></MudIconButton>
+
+                    <span>
+                        @context.Quantity
                 </span>
 
                 <MudIconButton Icon="@Icons.Material.Filled.Add" aria-label="add" OnClick="@(() => ManageQuantity(context.OrderItemID, "add"))"></MudIconButton>
 
-    
+
             </MudTd>
 
             <MudTd DataLabel="Price">Rs.@context.TotalPrice</MudTd>
-            <MudTd DataLabel="Action">
-                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => handleDeleteCartItem(context.OrderItemID))"></MudIconButton>
-            </MudTd>
-    </RowTemplate>
+                <MudTd DataLabel="Action">
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => handleDeleteCartItem(context.OrderItemID))"></MudIconButton>
+                </MudTd>
 
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+
+
+
+            </RowTemplate>
+
+
+
+
+        </MudTable>
 
     <div class="mt-5">
         <MudButton Variant="Variant.Filled" Class="mr-5" OnClick="clearCart">Clear Cart</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary">Checkout</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+           OnClick="@(() => NavigationManager.NavigateTo("/checkout"))"
+        >Checkout</MudButton>
     </div>
+}
 
-    @code {
+
+@code {
     [CascadingParameter]
     private GlobalState _globalState { set; get; }
 
@@ -71,65 +89,32 @@
     private Coffee _coffee { set; get; }
 
 
-    private String getOrderItemName(Guid itemID, string itemType)
-    {
-        if(itemType == "coffee")
-        {
-            Coffee coffee = CoffeeServices.GetCofeeDetailsByID(itemID.ToString());
-
-            if (coffee != null)
-            {
-                return coffee.CoffeeType;
-            }
-        }
-        else if (itemType == "add-in")
-        {
-            AddInItem addInItem = AddInItemsServices.GetAddInItemDetailsByID(itemID.ToString());
-
-            if (addInItem != null)
-            {
-                return addInItem.Name;
-            }
-
-        }
-
-        return "N/A";
-
-    }
-
-    private double calculateTotalAmount()
-    {
-        double totalAmount = 0;
-
-        foreach (var item in Elements)
-        {
-            totalAmount += item.TotalPrice;
-        }
-        return totalAmount;
-    }
-
     private void clearCart()
     {
         _globalState.OrderItems.Clear();
+        Snackbar.Add("Cart is cleared", Severity.Success);
     }
 
     private void handleDeleteCartItem(Guid orderItemID)
     {
         OrderItemServices.DeleteItemInOrderItemsList(_globalState.OrderItems, orderItemID);
-        _totalAmount = calculateTotalAmount();
+        _totalAmount = OrderItemServices.CalculateTotalAmount(Elements);
+        Snackbar.Add($"The Item is removed from the cart sucessfully", Severity.Success);
     }
 
     private void ManageQuantity(Guid orderItemID, string action)
     {
         OrderItemServices.ManageQuantityOfOrderItem(_globalState.OrderItems, orderItemID, action);
-        _totalAmount = calculateTotalAmount();
+        _totalAmount = OrderItemServices.CalculateTotalAmount(Elements);
+
     }
 
     protected override void OnInitialized()
     {
         Elements = _globalState.OrderItems;
         _globalState.AppBarTitle = "Cart Items";
-        _totalAmount = calculateTotalAmount();
+        _totalAmount = OrderItemServices.CalculateTotalAmount(Elements);
+
     }
 
     private bool dense = true;

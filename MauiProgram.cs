@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 using bislerium_cafe_pos.Services;
+using MudBlazor;
 
 namespace bislerium_cafe_pos
 {
@@ -22,14 +23,22 @@ namespace bislerium_cafe_pos
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddMudServices();
-          
+
+            builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.VisibleStateDuration = 4000;
+                config.SnackbarConfiguration.HideTransitionDuration = 200;
+                config.SnackbarConfiguration.ShowTransitionDuration = 200;
+                config.SnackbarConfiguration.MaxDisplayedSnackbars = 6;
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomStart;
+            });
+
             builder.Services.AddSingleton<UserServices>();
             builder.Services.AddSingleton<CoffeeServices>();
             builder.Services.AddSingleton<AddInItemsServices>();
             builder.Services.AddSingleton<OrderItemServices>();
             builder.Services.AddSingleton<OrderServices>();
-            builder.Services.AddSingleton<CustomerService>();
+            builder.Services.AddSingleton<CustomerServices>();
             
             return builder.Build();
         }

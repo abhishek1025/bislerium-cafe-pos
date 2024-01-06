@@ -24,6 +24,24 @@ namespace bislerium_cafe_pos.Services
             new() { CoffeeType = "Ristretto", Price = 110.0 }
         };
 
+        public List<Coffee> AddCoffee(String coffeeType, double price)
+
+        {
+            Coffee coffee = new()
+            {
+                CoffeeType = coffeeType,
+                Price = price
+            };
+
+            List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
+
+            coffeeList.Add(coffee);
+
+            SaveCoffeeListInJsonFile(coffeeList);
+
+            return coffeeList;
+        }
+
         public void SaveCoffeeListInJsonFile(List<Coffee> coffeeList)
         {
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
@@ -86,6 +104,21 @@ namespace bislerium_cafe_pos.Services
             coffeeToUpdate.Price = coffee.Price;
 
             SaveCoffeeListInJsonFile(coffeeList);
+        }
+
+        public List<Coffee> DeleteCoffeeType(Guid coffeeTypeID)
+        {
+            List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
+
+            Coffee coffee = coffeeList.FirstOrDefault(coffee => coffee.Id.ToString() == coffeeTypeID.ToString());
+
+            if(coffee != null)
+            {
+                coffeeList.Remove(coffee);
+                SaveCoffeeListInJsonFile(coffeeList);
+            }
+
+            return coffeeList;
         }
 
     }

@@ -12,6 +12,6 @@ namespace bislerium_cafe_pos.Models
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }
         public string CustomerPhoneNum { get; set; }
-        public int OrderCount { get; set; } = 0;
+        public int OrderCount { get; set; } = 1;
     }
 }

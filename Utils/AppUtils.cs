@@ -8,7 +8,6 @@ namespace bislerium_cafe_pos.Utils
 {
     internal class AppUtils
     {
-
         public static string GetDesktopDirectoryPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -37,6 +36,11 @@ namespace bislerium_cafe_pos.Utils
         public static string GetOrderItemListFilePath()
         {
             return Path.Combine(GetDesktopDirectoryPath(), "orderItems.json");
+        }
+
+        public static string GetOrderListFilePath()
+        {
+            return Path.Combine(GetDesktopDirectoryPath(), "orders.json");
         }
     }
 }

@@ -66,4 +66,7 @@
     <ItemGroup>
       <None Remove="Pages\" />
     </ItemGroup>
+    <ItemGroup>
+      <None Include="Pages\Dialogs\AddCoffeeTypeDialog.razor" />
+    </ItemGroup>
 </Project>

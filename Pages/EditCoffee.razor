@@ -1,6 +1,7 @@
 @page "/coffee-list/{coffeeID}"
 @inject NavigationManager NavigationManager
 @inject CoffeeServices CoffeeServices
+@inject ISnackbar Snackbar
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Class="mb-5" OnClick="goBack">
     Back
@@ -12,10 +13,7 @@
 {
     <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
 }
-else if (!string.IsNullOrEmpty(_sucessMessage))
-{
-    <MudAlert Severity="Severity.Success">@_sucessMessage</MudAlert>
-}
+
 
 @if (_coffee != null)
 {
@@ -50,7 +48,6 @@ else
     private GlobalState _globalState { get; set; }
 
     private string _errorMessage { get; set; } = "";
-    private string _sucessMessage { get; set; } = "";
 
     private Coffee _coffee { get; set; }
 
@@ -96,7 +93,9 @@ else
             CoffeeServices.UpdateCofeeDetails(_coffee);
 
             _errorMessage = "";
-            _sucessMessage = "Coffee details updated successfully";
+
+            Snackbar.Add("Coffee Details is updated sucessfully", Severity.Success);
+            goBack();
         }
         catch (Exception ex)
         {

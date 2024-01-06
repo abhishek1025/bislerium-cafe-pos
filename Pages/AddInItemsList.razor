@@ -2,6 +2,12 @@
 @inject AddInItemsServices AddInItemsServices
 @inject NavigationManager NavigationManager
 @inject OrderItemServices OrderItemServices
+@inject ISnackbar Snackbar
+@inject IDialogService Dialog
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Add" Class="mb-5"
+           OnClick="OpenAddItemDialog"
+           Disabled="@isUserStaff">Add Add-In Item</MudButton>
 
 <MudTable Items="@Elements"
           Dense="@dense"
@@ -27,10 +33,18 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
             <MudTd DataLabel="Action">
+                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.AddShoppingCart" aria-label="Cart" OnClick="@(() => handleAddItemInCart(context.Id, context.Price, context.Name))"></MudIconButton>
 
-                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Edit" aria-label="Edit" OnClick="@(() => handleEdit(context.Id))"></MudIconButton>
+                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Edit" aria-label="Edit"
+                               OnClick="@(() => handleEdit(context.Id))"
+                               Disabled="@isUserStaff">
+                </MudIconButton>
 
-                <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.AddShoppingCart" aria-label="Cart" OnClick="@(() => handleAddItemInCart(context.Id, context.Price))"></MudIconButton>
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="Delete"
+                               OnClick="@(() => handleDelete(context.Id))"
+                               Disabled="@isUserStaff">
+                </MudIconButton>
+
             </MudTd>
         </RowTemplate>
 
@@ -74,9 +88,11 @@
         _globalState.AppBarTitle = "Items";
     }
 
-    private void handleAddItemInCart(Guid addInItemID, double itemPrice)
+    private void handleAddItemInCart(Guid addInItemID, double itemPrice, string addInItemName)
     {
-        OrderItemServices.AddItemInOrderItemsList(_globalState.OrderItems, addInItemID, "add-in", itemPrice);
+        OrderItemServices.AddItemInOrderItemsList(_globalState.OrderItems, addInItemID, addInItemName, "add-in", itemPrice);
+
+        Snackbar.Add($"{addInItemName} is Added to cart", Severity.Success);
     }
 
     private bool FilterFunc1(AddInItem element) => FilterFunc(element, _searchString1);
@@ -93,5 +109,34 @@
             return true;
 
         return false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = AddInItemsServices.GetAddInItemsListListFromJsonFile();
+    }
+
+    private async Task OpenAddItemDialog()
+    {
+        DialogParameters dialogParameters = new() {
+            {"_globalState", _globalState },
+            {"ChangeParentState", new Action(Reload)},
+        };
+
+        Dialog.ShowAsync<AddAddInItemDialog>("Add Add-In Item", dialogParameters);
+    }
+
+    private void Reload()
+    {
+        Elements = AddInItemsServices.GetAddInItemsListListFromJsonFile();
+
+        StateHasChanged();
+    }
+
+    private void handleDelete(Guid itemID)
+    {
+        Elements = AddInItemsServices.DeletAddInItem(itemID);
+
+        Snackbar.Add("Item is Deleted Sucessfully", Severity.Success);
     }
 }
