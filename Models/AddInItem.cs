@@ -1,5 +1,4 @@
-﻿using System;
-namespace bislerium_cafe_pos.Models
+﻿namespace bislerium_cafe_pos.Models
 {
     public class AddInItem
     {

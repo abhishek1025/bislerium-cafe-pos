@@ -1,25 +1,22 @@
 ﻿using bislerium_cafe_pos.Models;
-using bislerium_cafe_pos.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
     public class OrderItemServices
     {
-      
+
+        // Adds an item to the list of order items and Increases the quantity if duplicates items exists.
         public void AddItemInOrderItemsList(List<OrderItem> _orderItems, Guid itemID, string itemName, String itemType, Double itemPrice)
         {
+
             OrderItem orderItem = _orderItems.FirstOrDefault(x => x.ItemID.ToString() == itemID.ToString() && x.ItemType == itemType);
 
             if (orderItem != null)
             {
                 orderItem.Quantity++;
                 orderItem.TotalPrice = orderItem.Quantity * itemPrice;
+
+                return;
             }
 
             orderItem = new()
@@ -34,9 +31,9 @@ namespace bislerium_cafe_pos.Services
 
             _orderItems.Add(orderItem);
 
-
         }
 
+        // Deletes an item from the list of order items.
         public void DeleteItemInOrderItemsList(List<OrderItem> _orderItems, Guid orderItemID)
         {
             OrderItem orderItem = _orderItems.FirstOrDefault(x => x.OrderItemID == orderItemID);
@@ -47,7 +44,8 @@ namespace bislerium_cafe_pos.Services
             }
         }
 
-        public void ManageQuantityOfOrderItem(List<OrderItem> _orderItems, Guid orderItemID, String action)
+        // Manages the quantity of an existing order item(add or subtract).
+        public void ManageQuantityOfOrderItem(List<OrderItem> _orderItems, Guid orderItemID, string action)
         {
             OrderItem orderItem = _orderItems.FirstOrDefault(x => x.OrderItemID == orderItemID);
 
@@ -66,6 +64,7 @@ namespace bislerium_cafe_pos.Services
             }
         }
 
+        // Calculates the total amount of all order items.
         public double CalculateTotalAmount(IEnumerable<OrderItem> Elements)
         {
             double totalAmount = 0;
@@ -78,5 +77,5 @@ namespace bislerium_cafe_pos.Services
         }
     }
 
-    
+
 }

@@ -1,15 +1,14 @@
 ﻿
 using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
-using System.Data;
 using System.Text.Json;
 
 namespace bislerium_cafe_pos.Services
 {
     public class UserServices
     {
-
-        private List<User> _seedUsersList = new()
+        // List of default users for initial seeding
+        private readonly List<User> _seedUsersList = new()
         {
             new User()
             {
@@ -27,7 +26,7 @@ namespace bislerium_cafe_pos.Services
         };
 
 
-
+        // Saves a list of users to the JSON file.
         public void SaveAllUsersInJsonFile(List<User> users)
         {
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
@@ -43,7 +42,8 @@ namespace bislerium_cafe_pos.Services
             File.WriteAllText(appUsersFilePath, json);
         }
 
-         public List<User> GetAllUsersFromJsonFile()
+        // Retrieves a list of users from the JSON file.
+        public List<User> GetAllUsersFromJsonFile()
         {
             string appUsersFilePath = AppUtils.GetAppUsersFilePath();
 
@@ -55,9 +55,48 @@ namespace bislerium_cafe_pos.Services
             var json = File.ReadAllText(appUsersFilePath);
 
             return JsonSerializer.Deserialize<List<User>>(json);
-        }
-        
 
+            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-android)'
+            Before:
+                    }
+
+
+                    public void SeedUsers()
+            After:
+                    }
+
+
+                    public void SeedUsers()
+            */
+
+            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-windows10.0.19041.0)'
+            Before:
+                    }
+
+
+                    public void SeedUsers()
+            After:
+                    }
+
+
+                    public void SeedUsers()
+            */
+
+            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-ios)'
+            Before:
+                    }
+
+
+                    public void SeedUsers()
+            After:
+                    }
+
+
+                    public void SeedUsers()
+            */
+        }
+
+        // Seeds the user list with default users if it's empty.
         public void SeedUsers()
         {
             var users = GetAllUsersFromJsonFile();
@@ -67,12 +106,13 @@ namespace bislerium_cafe_pos.Services
                 SaveAllUsersInJsonFile(_seedUsersList);
             }
         }
-       
-        public User LogIn(string userName, string password, string role) 
+
+        // Authenticates a user during login.
+        public User LogIn(string userName, string password, string role)
         {
             const string errorMessage = "Invalid username or password";
 
-            if(string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
             {
                 throw new Exception("Username and password is required");
             }
@@ -84,9 +124,10 @@ namespace bislerium_cafe_pos.Services
             return user ?? throw new Exception(errorMessage);
         }
 
+        // Updates a user's password.
         public User ChangePassword(User currentUser, string newPassword, string currentPassword)
         {
-            
+
 
             List<User> users = GetAllUsersFromJsonFile();
 
@@ -110,7 +151,7 @@ namespace bislerium_cafe_pos.Services
 
             SaveAllUsersInJsonFile(users);
 
-            return user;            
+            return user;
         }
     }
 }

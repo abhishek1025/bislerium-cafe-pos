@@ -1,16 +1,12 @@
 ﻿using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
     public class CustomerServices
     {
+        // Retrieves the list of customers from the JSON file.
         public List<Customer> GetCustomerListFromJsonFile()
         {
             string customersFilePath = AppUtils.GetCustomersListFilePath();
@@ -23,8 +19,26 @@ namespace bislerium_cafe_pos.Services
             var json = File.ReadAllText(customersFilePath);
 
             return JsonSerializer.Deserialize<List<Customer>>(json);
-            
+
         }
+
+        // Saves a list of customers to the JSON file.
+        public void SaveCustomerListInJsonFile(List<Customer> customers)
+        {
+            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
+            string customerListFilePath = AppUtils.GetCustomersListFilePath();
+
+            if (!Directory.Exists(appDataDirPath))
+            {
+                Directory.CreateDirectory(appDataDirPath);
+            }
+
+            var json = JsonSerializer.Serialize(customers);
+
+            File.WriteAllText(customerListFilePath, json);
+        }
+
+        // Retrieves a customer by their phone number from the JSON file
         public Customer GetCustomerByPhoneNum(string customerPhoneNum)
         {
             List<Customer> customers = GetCustomerListFromJsonFile();
@@ -32,8 +46,7 @@ namespace bislerium_cafe_pos.Services
             return customer;
         }
 
-    
-
+        // Adds a new customer to the list and updates JSON file.
         public void AddCustomer(Customer _customer)
         {
 
@@ -47,19 +60,11 @@ namespace bislerium_cafe_pos.Services
             List<Customer> customers = GetCustomerListFromJsonFile();
             customers.Add(_customer);
 
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
-            string customerListFilePath = AppUtils.GetCustomersListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
-
-            var json = JsonSerializer.Serialize(customers);
-
-            File.WriteAllText(customerListFilePath, json);
+            SaveCustomerListInJsonFile(customers);
         }
 
+        // Updates a customer's order count and saves the updated list to the JSON file.
+        // This method is called when a customer places an order.
         public void UpdateCustomerOrderCout(string customerPhoneNum)
         {
             List<Customer> customers = GetCustomerListFromJsonFile();
@@ -67,17 +72,7 @@ namespace bislerium_cafe_pos.Services
 
             customer.OrderCount++;
 
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
-            string customerListFilePath = AppUtils.GetCustomersListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
-
-            var json = JsonSerializer.Serialize(customers);
-
-            File.WriteAllText(customerListFilePath, json);
+            SaveCustomerListInJsonFile(customers);
         }
     }
 }

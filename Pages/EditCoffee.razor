@@ -22,7 +22,7 @@
             <div class="col-6 d-flex flex-column gap-y-3">
                 <MudTextField @bind-Value="_currentPassword" Label="Current Password" Variant="Variant.Outlined" InputType="@InputType.Password"></MudTextField>
                 <MudTextField @bind-Value="_coffee.CoffeeType" Label="Coffee Type" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField @bind-Value="_coffee.Price" Label="Price" Variant="Variant.Outlined"></MudTextField>
+                <MudTextField @bind-Value="_coffee.Price" Label="Price" Variant="Variant.Outlined" InputType="@InputType.Number"></MudTextField>
                 <div>
                     <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Class="mt-5" OnClick="handleUpdateCoffeeDetails">
                         Update Coffee

@@ -1,11 +1,6 @@
 ﻿using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
@@ -26,6 +21,7 @@ namespace bislerium_cafe_pos.Services
             new() { Name = "Special Syrup Blend", Price = 28.0 }
         };
 
+        // Adds a new AddInItem
         public void AddAddInItem(String name, double price)
 
         {
@@ -44,12 +40,14 @@ namespace bislerium_cafe_pos.Services
         }
 
 
-
+        // Saves the AddInItems list to the JSON file
         public void SaveAddInItemsListInJsonFile(List<AddInItem> addInItemList)
         {
+            // Folder path where all the files related to app are stored
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string addInItemsListListFilePath = AppUtils.GetAddInItemsListFilePath();
 
+            // Ensure the directory exists or create it if not
             if (!Directory.Exists(appDataDirPath))
             {
                 Directory.CreateDirectory(appDataDirPath);
@@ -59,6 +57,8 @@ namespace bislerium_cafe_pos.Services
 
             File.WriteAllText(addInItemsListListFilePath, json);
         }
+
+        // Retrieves the AddInItems list from the JSON file.
         public List<AddInItem> GetAddInItemsListListFromJsonFile()
         {
             string addInsItemsListListFilePath = AppUtils.GetAddInItemsListFilePath();
@@ -73,7 +73,7 @@ namespace bislerium_cafe_pos.Services
             return JsonSerializer.Deserialize<List<AddInItem>>(json);
         }
 
-
+        // Seed the Add-In items list with predefined items if there is not any Add-In items in the JSON file
         public void SeedAddInItemsList()
         {
             List<AddInItem> addInsList = GetAddInItemsListListFromJsonFile();
@@ -84,20 +84,22 @@ namespace bislerium_cafe_pos.Services
             }
         }
 
+        // Retrieves an AddInItem by its ID) from the list.
         public AddInItem GetAddInItemDetailsByID(String addInItemID)
         {
-            List<AddInItem> coffeeList = GetAddInItemsListListFromJsonFile();
-            AddInItem addInItem = coffeeList.FirstOrDefault(addIn => addIn.Id.ToString() == addInItemID);
+            List<AddInItem> addInItemList = GetAddInItemsListListFromJsonFile();
+            AddInItem addInItem = addInItemList.FirstOrDefault(addIn => addIn.Id.ToString() == addInItemID);
             return addInItem;
         }
 
-
+        // Updates an existing AddInItem
         public void UpdateAddInItemDetails(AddInItem addInItem)
         {
             List<AddInItem> addInItemsList = GetAddInItemsListListFromJsonFile();
 
             AddInItem addInItemToUpdate = addInItemsList.FirstOrDefault(_addInItem => _addInItem.Id.ToString() == addInItem.Id.ToString());
 
+            // Handle the case where the Add-In item to update is not found
             if (addInItemToUpdate == null)
             {
                 throw new Exception("Add-In item not found");
@@ -109,12 +111,13 @@ namespace bislerium_cafe_pos.Services
             SaveAddInItemsListInJsonFile(addInItemsList);
         }
 
+        // Deletes an AddInItem by ID
         public List<AddInItem> DeletAddInItem(Guid addInItemID)
         {
             List<AddInItem> addInItemsList = GetAddInItemsListListFromJsonFile();
-            AddInItem addInItem = addInItemsList.FirstOrDefault(item => item.Id.ToString() == addInItemID.ToString()); 
+            AddInItem addInItem = addInItemsList.FirstOrDefault(item => item.Id.ToString() == addInItemID.ToString());
 
-            if(addInItem != null)
+            if (addInItem != null)
             {
                 addInItemsList.Remove(addInItem);
                 SaveAddInItemsListInJsonFile(addInItemsList);

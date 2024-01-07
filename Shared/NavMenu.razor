@@ -1,4 +1,4 @@
-﻿
+﻿@inject NavigationManager NavigationManager
 
 
 <div class="py-4 vh-100 bg-transparent">
@@ -10,9 +10,9 @@
 
             <CafeTitle />
 
-            <MudDivider Class="my-2" />
+            <MudDivider Class="my-4"/>
 
-            <MudNavMenu Bordered="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2 mt-10">
+            <MudNavMenu Bordered="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
                 <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
 
@@ -23,20 +23,41 @@
 
                 <MudNavLink Match="NavLinkMatch.All" Href="/cart-items" Icon="@Icons.Material.Filled.ShoppingCart">Order Cart</MudNavLink>
 
+                <MudNavLink Match="NavLinkMatch.All" Href="/generate-reports" Icon="@Icons.Material.Filled.Description">Generate Reports</MudNavLink>
+
+
+
                 @*<MudNavLink Match="NavLinkMatch.All" Href="/sign-in" Icon="@Icons.Material.Filled.Login">Sign In</MudNavLink>*@
             </MudNavMenu>
 
         </MudPaper>
 
 
-        <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
-            <MudNavLink Href="/sign-out" Icon="@Icons.Material.Filled.Login">Sign Out</MudNavLink>
-        </MudNavMenu>
+        @* <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+        <MudNavLink Href="/sign-out" Icon="@Icons.Material.Filled.Login">Sign Out</MudNavLink>
+        </MudNavMenu> *@
+
+
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" OnClick="logout" Class="mx-4">
+            Sign Out
+        </MudButton>
 
     </div>
 
-
-
 </div>
+
+@code {
+    [CascadingParameter] private GlobalState _globalState { set; get; }
+
+    private void logout()
+    {
+        //OnClicking the logout button, the current user will be set to null, the order items will be cleared
+        // and the user will be navigated to sign-in page.
+        _globalState.CurrentUser = null;
+        _globalState.OrderItems = new();
+
+        NavigationManager.NavigateTo("/sign-in");
+    }
+}
 
 

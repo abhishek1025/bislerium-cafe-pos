@@ -1,16 +1,12 @@
 ﻿using bislerium_cafe_pos.Models;
 using bislerium_cafe_pos.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace bislerium_cafe_pos.Services
 {
     public class OrderServices
     {
+        // Retrieves a list of orders from the JSON file.
         public List<Order> GetOrdersFromJsonFile()
         {
             string orderListFilePath = AppUtils.GetOrderListFilePath();
@@ -23,13 +19,15 @@ namespace bislerium_cafe_pos.Services
             var json = File.ReadAllText(orderListFilePath);
 
             return JsonSerializer.Deserialize<List<Order>>(json);
-        }   
+        }
 
+        // Places a new order and appends the new order to the Orders.json file.
         public void PlaceOrder(Order order)
         {
             List<Order> orders = GetOrdersFromJsonFile();
             orders.Add(order);
 
+            // Folder path where all the files related to app are stored.
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string orderListFilePath = AppUtils.GetOrderListFilePath();
 

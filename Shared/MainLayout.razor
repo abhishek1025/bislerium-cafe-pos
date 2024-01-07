@@ -6,6 +6,10 @@
 <MudAppBar>
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
     <h4 class="m-0">@_globalState.AppBarTitle</h4>
+
+    <MudSpacer />
+
+    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Secondary">@_globalState?.CurrentUser?.UserName?.ToUpper()</MudChip>
 </MudAppBar>
 
 <MudDrawer @bind-Open="@_drawerOpen" >

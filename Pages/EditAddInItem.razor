@@ -21,9 +21,9 @@
             <div class="col-6 d-flex flex-column gap-y-3">
                 <MudTextField @bind-Value="_currentPassword" Label="Current Password" Variant="Variant.Outlined" InputType="@InputType.Password"></MudTextField>
                 <MudTextField @bind-Value="_addInItem.Name" Label="Add-In Item Name" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField @bind-Value="_addInItem.Price" Label="Price" Variant="Variant.Outlined"></MudTextField>
+                <MudTextField @bind-Value="_addInItem.Price" Label="Price" Variant="Variant.Outlined" InputType="@InputType.Number"></MudTextField>
                 <div>
-                    <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Class="mt-5" OnClick="handleUpdateCoffeeDetails">
+                    <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Class="mt-5" OnClick="handleUpdateAddInItemDetails">
                         Update Add-In Item
                     </MudButton>
                 </div>
@@ -62,7 +62,7 @@ else
         NavigationManager.NavigateTo("/addIn-items");
     }
 
-    protected void handleUpdateCoffeeDetails()
+    protected void handleUpdateAddInItemDetails()
     {
         try
         {

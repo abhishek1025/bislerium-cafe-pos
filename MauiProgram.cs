@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using MudBlazor.Services;
-using bislerium_cafe_pos.Services;
+﻿using bislerium_cafe_pos.Services;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
+using MudBlazor.Services;
 
 namespace bislerium_cafe_pos
 {
@@ -20,8 +20,8 @@ namespace bislerium_cafe_pos
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
 
             builder.Services.AddMudServices(config =>
@@ -39,7 +39,7 @@ namespace bislerium_cafe_pos
             builder.Services.AddSingleton<OrderItemServices>();
             builder.Services.AddSingleton<OrderServices>();
             builder.Services.AddSingleton<CustomerServices>();
-            
+
             return builder.Build();
         }
     }

@@ -1,14 +1,40 @@
-﻿using System;
-using System.Text.Json;
-using bislerium_cafe_pos.Models;
+﻿using bislerium_cafe_pos.Models;
+
+/* Unmerged change from project 'bislerium-cafe-pos (net7.0-android)'
+Before:
 using bislerium_cafe_pos.Utils;
+After:
+using bislerium_cafe_pos.Utils;
+using System;
+using System.Text.Json;
+*/
+
+/* Unmerged change from project 'bislerium-cafe-pos (net7.0-windows10.0.19041.0)'
+Before:
+using bislerium_cafe_pos.Utils;
+After:
+using bislerium_cafe_pos.Utils;
+using System;
+using System.Text.Json;
+*/
+
+/* Unmerged change from project 'bislerium-cafe-pos (net7.0-ios)'
+Before:
+using bislerium_cafe_pos.Utils;
+After:
+using bislerium_cafe_pos.Utils;
+using System;
+using System.Text.Json;
+*/
+using bislerium_cafe_pos.Utils;
+using System.Text.Json;
 
 namespace bislerium_cafe_pos.Services
 {
     public class CoffeeServices
     {
 
-        // Creating a list of Coffee objects with prices in Nepalese Rupees (NPR)
+        // Creating a list of Coffee objects 
         private readonly List<Coffee> _coffeeList = new()
         {
             new() { CoffeeType = "Cappuccino", Price = 150.0 },
@@ -24,6 +50,7 @@ namespace bislerium_cafe_pos.Services
             new() { CoffeeType = "Ristretto", Price = 110.0 }
         };
 
+        // Adds a new coffee to the list and saves it to the JSON file.
         public List<Coffee> AddCoffee(String coffeeType, double price)
 
         {
@@ -42,9 +69,12 @@ namespace bislerium_cafe_pos.Services
             return coffeeList;
         }
 
+        // Saves a list of coffees to the JSON file.
         public void SaveCoffeeListInJsonFile(List<Coffee> coffeeList)
         {
+            // Folder path where all the files related to app are stored
             string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
+
             string coffeeListFilePath = AppUtils.GetCofeeListFilePath();
 
             if (!Directory.Exists(appDataDirPath))
@@ -57,6 +87,7 @@ namespace bislerium_cafe_pos.Services
             File.WriteAllText(coffeeListFilePath, json);
         }
 
+        // Retrieves the coffee list from the JSON file.
         public List<Coffee> GetCoffeeListFromJsonFile()
         {
             string coffeeListFilePath = AppUtils.GetCofeeListFilePath();
@@ -71,7 +102,7 @@ namespace bislerium_cafe_pos.Services
             return JsonSerializer.Deserialize<List<Coffee>>(json);
         }
 
-
+        // Seeds the JSON file with initial coffees if the JSON file is empty.
         public void SeedCofeeDetails()
         {
             List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
@@ -82,6 +113,7 @@ namespace bislerium_cafe_pos.Services
             }
         }
 
+        // Retrieves a coffee by its ID from the JSON file.
         public Coffee GetCofeeDetailsByID(String coffeeID)
         {
             List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
@@ -89,6 +121,7 @@ namespace bislerium_cafe_pos.Services
             return coffee;
         }
 
+        // Updates an existing coffee in the list and in JSON file
         public void UpdateCofeeDetails(Coffee coffee)
         {
             List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
@@ -106,13 +139,14 @@ namespace bislerium_cafe_pos.Services
             SaveCoffeeListInJsonFile(coffeeList);
         }
 
+        // Deletes a coffee by its ID and updates the JSON file.
         public List<Coffee> DeleteCoffeeType(Guid coffeeTypeID)
         {
             List<Coffee> coffeeList = GetCoffeeListFromJsonFile();
 
             Coffee coffee = coffeeList.FirstOrDefault(coffee => coffee.Id.ToString() == coffeeTypeID.ToString());
 
-            if(coffee != null)
+            if (coffee != null)
             {
                 coffeeList.Remove(coffee);
                 SaveCoffeeListInJsonFile(coffeeList);
