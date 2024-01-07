@@ -74,7 +74,7 @@
                 return;
             }
 
-            AddInItemServices.AddAddInItem(_addInItemName, _price);
+            AddInItemServices.AddAddInItem(_addInItemName, Math.Round(_price, 2));
 
             ChangeParentState.Invoke();
 

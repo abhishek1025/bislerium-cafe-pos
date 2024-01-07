@@ -55,45 +55,6 @@ namespace bislerium_cafe_pos.Services
             var json = File.ReadAllText(appUsersFilePath);
 
             return JsonSerializer.Deserialize<List<User>>(json);
-
-            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-android)'
-            Before:
-                    }
-
-
-                    public void SeedUsers()
-            After:
-                    }
-
-
-                    public void SeedUsers()
-            */
-
-            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-windows10.0.19041.0)'
-            Before:
-                    }
-
-
-                    public void SeedUsers()
-            After:
-                    }
-
-
-                    public void SeedUsers()
-            */
-
-            /* Unmerged change from project 'bislerium-cafe-pos (net7.0-ios)'
-            Before:
-                    }
-
-
-                    public void SeedUsers()
-            After:
-                    }
-
-
-                    public void SeedUsers()
-            */
         }
 
         // Seeds the user list with default users if it's empty.

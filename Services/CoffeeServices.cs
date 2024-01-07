@@ -1,31 +1,4 @@
 ﻿using bislerium_cafe_pos.Models;
-
-/* Unmerged change from project 'bislerium-cafe-pos (net7.0-android)'
-Before:
-using bislerium_cafe_pos.Utils;
-After:
-using bislerium_cafe_pos.Utils;
-using System;
-using System.Text.Json;
-*/
-
-/* Unmerged change from project 'bislerium-cafe-pos (net7.0-windows10.0.19041.0)'
-Before:
-using bislerium_cafe_pos.Utils;
-After:
-using bislerium_cafe_pos.Utils;
-using System;
-using System.Text.Json;
-*/
-
-/* Unmerged change from project 'bislerium-cafe-pos (net7.0-ios)'
-Before:
-using bislerium_cafe_pos.Utils;
-After:
-using bislerium_cafe_pos.Utils;
-using System;
-using System.Text.Json;
-*/
 using bislerium_cafe_pos.Utils;
 using System.Text.Json;
 
@@ -134,7 +107,7 @@ namespace bislerium_cafe_pos.Services
             }
 
             coffeeToUpdate.CoffeeType = coffee.CoffeeType;
-            coffeeToUpdate.Price = coffee.Price;
+            coffeeToUpdate.Price = Math.Round(coffee.Price, 2);
 
             SaveCoffeeListInJsonFile(coffeeList);
         }

@@ -1,13 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavManager
 
-@if (_globalState.CurrentUser != null)
-{
-    <p>UserName: @_globalState.CurrentUser.UserName</p>
-    <p>Role: @_globalState.CurrentUser.Role</p>
-    <p>Password: @_globalState.CurrentUser.Password</p>
-    <p>Has User Changed Initial Password: @_globalState.CurrentUser.HasInitialPasswordChanged</p>
-}
 
 @code {
 
@@ -23,9 +16,20 @@
         }
         else
         {
-            NavManager.NavigateTo("/");
+            if(_globalState.CurrentUser.Role.ToString() == "Administrator")
+            {
+                NavManager.NavigateTo("/sales-transactions");
+                _globalState.AppBarTitle = "Sales Transactions";
 
-            _globalState.AppBarTitle = "Dashboard";
+            }
+            else
+            {
+
+                NavManager.NavigateTo("/coffee-list");
+                _globalState.AppBarTitle = "Items";
+
+            }
+
         }
     }
 

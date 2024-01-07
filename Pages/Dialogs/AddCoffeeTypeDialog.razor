@@ -73,7 +73,7 @@
                 return;
             }
 
-            CoffeeServices.AddCoffee(_coffeeType, _price);
+            CoffeeServices.AddCoffee(_coffeeType, Math.Round(_price, 2));
 
             ChangeParentState.Invoke();
 

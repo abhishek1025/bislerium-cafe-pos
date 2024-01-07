@@ -21,7 +21,7 @@
         <ToolBarContent>
             <MudText Typo="Typo.h6">Order Items List</MudText>
             <MudSpacer />
-            <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@_totalAmount</b></MudText>
+            <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@Math.Round(_totalAmount, 2)</b></MudText>
         </ToolBarContent>
 
 
@@ -53,7 +53,7 @@
 
             </MudTd>
 
-            <MudTd DataLabel="Price">Rs.@context.TotalPrice</MudTd>
+            <MudTd DataLabel="Price">Rs.@Math.Round(context.TotalPrice, 2)</MudTd>
                 <MudTd DataLabel="Action">
                     <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => handleDeleteCartItem(context.OrderItemID))"></MudIconButton>
                 </MudTd>

@@ -39,6 +39,7 @@ namespace bislerium_cafe_pos
             builder.Services.AddSingleton<OrderItemServices>();
             builder.Services.AddSingleton<OrderServices>();
             builder.Services.AddSingleton<CustomerServices>();
+            builder.Services.AddSingleton<ReportDataService>();
 
             return builder.Build();
         }

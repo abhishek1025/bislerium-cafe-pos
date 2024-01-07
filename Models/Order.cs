@@ -6,10 +6,10 @@
         public Guid CustomerID { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhoneNum { get; set; }
-        public String EmployeeUserName { get; set; }
+        public string EmployeeUserName { get; set; }
         public DateTime OrderDateTime { get; set; } = DateTime.Now;
-        //public int Month { get; set; } = DateTime.Now.Month;
         public List<OrderItem> OrderItems { get; set; }
-        public Double OrderTotalAmount { get; set; }
+        public double OrderTotalAmount { get; set; }
+        public double DiscountAmount { get; set; } = 0;
     }
 }

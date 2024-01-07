@@ -106,7 +106,7 @@ namespace bislerium_cafe_pos.Services
             }
 
             addInItemToUpdate.Name = addInItem.Name;
-            addInItemToUpdate.Price = addInItem.Price;
+            addInItemToUpdate.Price = Math.Round(addInItem.Price, 2);
 
             SaveAddInItemsListInJsonFile(addInItemsList);
         }
