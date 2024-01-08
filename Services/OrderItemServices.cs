@@ -77,6 +77,123 @@ namespace bislerium_cafe_pos.Services
         }
 
 
+        // Returns the item with reducing the quantity of coffee item
+        //public Dictionary<string, double> ReedemFreeCoffees(int totalFreeCoffeeCount, List<OrderItem> cartOrderItems) { 
+
+        //    int redeemedCoffeeCount = 0;
+
+        //    //Caluclating total quantity of cart
+        //    int totalItemsQuantityInCart = cartOrderItems
+        //                                                .Where(item => item.ItemType == "coffee")
+        //                                                .Sum(item  => item.Quantity);
+        //    double totalDiscountAmount = 0;
+
+
+        //    if (cartOrderItems.Count == 0)
+        //    {
+        //        return new();
+        //    }
+
+        //    while (true)
+        //    {
+        //        //Getting the order item with maximum price
+        //        OrderItem orderItem = cartOrderItems
+        //                                .Where(item => item.ItemType == "coffee")  // Filter items with ItemType equal to "coffee"
+        //                                .OrderByDescending(item => item.Price)    // Order the filtered items by Price in descending order
+        //                                .FirstOrDefault();
+
+        //        // If diff between item's quantity in cart and free coffee count is -ve then the new quantity will be 0.
+        //        int newItemQuantity = (orderItem.Quantity - totalFreeCoffeeCount) <= 0 ? 0 : (orderItem.Quantity - totalFreeCoffeeCount);
+
+        //        //Calculating how many coffee are redemed by the customer
+        //        redeemedCoffeeCount += (newItemQuantity == 0 ? orderItem.Quantity : newItemQuantity);
+
+        //        //Calculating the discount amount of each item
+        //        double discountAmountPerItem = newItemQuantity == 0 ? (orderItem.Quantity * orderItem.Price) : (newItemQuantity * orderItem.Price);
+
+        //        //Total discount amount
+        //        totalDiscountAmount += discountAmountPerItem;
+
+        //        //Reducing the free coffee count
+        //        totalFreeCoffeeCount -= orderItem.Quantity;
+
+        //        //Reducing the total quantity of cart
+        //        totalItemsQuantityInCart -= newItemQuantity;
+
+        //        //If the total free coffee count is 0 then, the loop will be stopped
+        //        // Or If the total quantity of coffee is 0 then there will not be any items to reedemed.
+        //        // So, the loop will be stopped
+        //        if (totalFreeCoffeeCount <= 0 || totalItemsQuantityInCart <= 0)
+        //        {
+        //            break;
+        //        }
+
+        //        // This step will remove the item which is redeemed through free coffee count
+        //        cartOrderItems.Remove(orderItem);
+        //    }
+
+        //    return new Dictionary<string, double>
+        //    {
+        //        {"dicount", totalDiscountAmount },
+        //        {"redeemedCoffeeCount", redeemedCoffeeCount }
+        //    };
+        //}
+
+        // Redeems free coffees based on the totalFreeCoffeeCount and the items in the cart.
+        public Dictionary<string, double> RedeemFreeCoffees(int totalFreeCoffeeCount, List<OrderItem> cartOrderItems)
+        {
+            // Initialize variables to track redeemed coffees and total discount amount.
+            int totalRedeemedCoffeeCount = 0;
+            double totalDiscountAmount = 0;
+
+            // If the cart is empty or no free coffees available, return an empty dictionary.
+            if (cartOrderItems.Count == 0 || totalFreeCoffeeCount <= 0)
+            {
+                return new Dictionary<string, double>();
+            }
+
+            //Caluclating total quantity of cart
+            int totalItemsQuantityInCart = cartOrderItems
+                                                         .Where(item => item.ItemType == "coffee")
+                                                          .Sum(item => item.Quantity);
+
+            // Filter and order coffee items in the cart by price in descending order.
+            var coffeeItems = cartOrderItems
+                .Where(item => item.ItemType == "coffee")
+                .OrderByDescending(item => item.Price)
+                .ToList();
+
+            foreach (var orderItem in coffeeItems)
+            {
+                // Calculate the new quantity of the coffee item after applying free coffee redemption.
+                int diffBetweenCartQuantityAndFreeCoffeeCount = Math.Max(0, orderItem.Quantity - totalFreeCoffeeCount);
+
+                int reedeemedItemQuantity = diffBetweenCartQuantityAndFreeCoffeeCount == 0 ? orderItem.Quantity : diffBetweenCartQuantityAndFreeCoffeeCount;
+
+                // Calculate the number of redeemed coffees based on the new quantity.
+                totalRedeemedCoffeeCount += reedeemedItemQuantity;
+
+                // Calculate the discount amount for the coffee item.
+                totalDiscountAmount += (orderItem.Price * reedeemedItemQuantity);
+
+                // Update the remaining free coffee count.
+                totalFreeCoffeeCount -= reedeemedItemQuantity;
+
+                // Break the loop if no more free coffees or no more coffee items in the cart.
+                if (totalFreeCoffeeCount <= 0)
+                {
+                    break;
+                }
+            }
+
+            // Return a dictionary containing the total discount amount and the count of redeemed coffees.
+            return new Dictionary<string, double>
+            {
+                { "discount", totalDiscountAmount },
+                { "redeemedCoffeeCount", totalRedeemedCoffeeCount }
+            };
+        }
+
     }
 
 

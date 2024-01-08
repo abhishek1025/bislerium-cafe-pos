@@ -105,7 +105,6 @@ namespace bislerium_cafe_pos.Pdf
                     });
                 });
             });
-
           
         }
 

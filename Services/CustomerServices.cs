@@ -72,10 +72,11 @@ namespace bislerium_cafe_pos.Services
 
         // Updates a customer's order count and saves the updated list to the JSON file.
         // This method is called when a customer places an order.
-        public void UpdateCustomerOrderCout(string customerPhoneNum)
+        public void UpdateRedeemedCoffeeCount(string customerPhoneNum, int redeemedCoffeeCount)
         {
             List<Customer> customers = GetCustomerListFromJsonFile();
             Customer customer = customers.FirstOrDefault(c => c.CustomerPhoneNum == customerPhoneNum);
+            customer.RedeemedCoffeeCount = redeemedCoffeeCount;
 
             SaveCustomerListInJsonFile(customers);
         }
