@@ -70,17 +70,45 @@ namespace bislerium_cafe_pos.Pdf
         {
             container.PaddingVertical(20).Column(column =>
             {
+
+                var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
+
+                string pdfTitle = $"Top 5 Most Purchased Items - ({ReportObj.ReportDate})";
+
+                column.Item().Text(pdfTitle).Style(titleStyle);
+
+                column.Item().PaddingTop(7).Element(ComposeTableForMostPurchased);
+
                 // Sales Transactions
-                column.Item().Element(ComposeSalesTransactionsHeader);
+                column.Item().PaddingTop(30).Element(ComposeSalesTransactionsHeader);
                 column.Item().PaddingTop(10).Element(ComposeSalesTransactionsTable);
 
-                // Top 5 Most Purchased Coffee 
-                column.Item().PaddingTop(30).Element(ComposeHeadingForTopCoffees);
-                column.Item().PaddingTop(10).Element(ComposeMostPurchasedCoffesTable);
+            });
+        }
 
-                // Top 5 Most Added Add-In Items
-                column.Item().PaddingTop(30).Element(ComposeHeadingForTopAddInsItems);
-                column.Item().PaddingTop(10).Element(ComposeMostPurchasedAddInsItemTable);
+        void ComposeTableForMostPurchased(IContainer Container){
+            Container.Table(table =>
+            {
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(290);
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {
+                    //Add-ins heading
+                    header.Cell().Element(ComposeHeadingForTopAddInsItems);
+
+                    //Coffee heading
+                    header.Cell().Element(ComposeHeadingForTopCoffees);
+                });
+
+               //Add-ins Table
+                table.Cell().Element(ComposeMostPurchasedAddInsItemTable);
+
+                //Coffee Table
+                table.Cell().Element(ComposeMostPurchasedCoffesTable);
             });
         }
 
@@ -163,12 +191,12 @@ namespace bislerium_cafe_pos.Pdf
             });
         }
 
-        // This method composes the header of the Top 5 Most Purchased Coffees.
-        void ComposeHeadingForTopCoffees(IContainer container)
+        // This method composes the header of the Top 5 Most Added Add-In Items.
+        void ComposeHeadingForTopAddInsItems(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(12).SemiBold();
 
-            string title = $"Top 5 Most Purchased Coffee - ({ReportObj.ReportDate})";
+            string title = "Most Purchased Add-In Items";
 
             container.Row(row =>
             {
@@ -179,6 +207,24 @@ namespace bislerium_cafe_pos.Pdf
                 });
             });
 
+
+        }
+
+        // This method composes the header of the Top 5 Most Purchased Coffees.
+        void ComposeHeadingForTopCoffees(IContainer container)
+        {
+            var titleStyle = TextStyle.Default.FontSize(12).SemiBold();
+
+            string title = "Most Purchased Coffee";
+
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(column =>
+                {
+                    column.Item().Text($"{title}").Style(titleStyle);
+
+                });
+            });
 
         }
 
@@ -223,25 +269,6 @@ namespace bislerium_cafe_pos.Pdf
                     }
                 }
             });
-        }
-
-        // This method composes the header of the Top 5 Most Added Add-In Items.
-        void ComposeHeadingForTopAddInsItems(IContainer container)
-        {
-            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
-
-            string title = $"Top 5 Most Added Add-In Items - ({ReportObj.ReportDate})";
-
-            container.Row(row =>
-            {
-                row.RelativeItem().Column(column =>
-                {
-                    column.Item().Text($"{title}").Style(titleStyle);
-
-                });
-            });
-
-
         }
 
         // This method generates the Top 5 Most Added Add-In Items table.
