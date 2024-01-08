@@ -6,6 +6,13 @@ namespace bislerium_cafe_pos.Services
 {
     public class CustomerServices
     {
+        private OrderServices _orderServices;
+
+        public CustomerServices(OrderServices orderServices)
+        {
+            _orderServices = orderServices;
+        }
+
         // Retrieves the list of customers from the JSON file.
         public List<Customer> GetCustomerListFromJsonFile()
         {
@@ -70,9 +77,42 @@ namespace bislerium_cafe_pos.Services
             List<Customer> customers = GetCustomerListFromJsonFile();
             Customer customer = customers.FirstOrDefault(c => c.CustomerPhoneNum == customerPhoneNum);
 
-            customer.OrderCount++;
-
             SaveCustomerListInJsonFile(customers);
+        }
+
+        //This method counts the order of prev month
+        // With the order count more than 28, the customer is eligible for a free coffee.
+        public bool CheckIfCustomerIsReguralMember(string customerPhoneNum)
+        {
+            List<Order> orders = _orderServices.GetOrdersFromJsonFile();
+
+            // This condition is for:
+            // If month is January, then the previous month is December of the previous year.
+            int month = DateTime.Now.Month - 1;
+            int year = month == 12 ? DateTime.Now.Year - 1 : DateTime.Now.Year;
+
+            // At first, the order is filtered by the customer's phone number and previous month.
+            // Then, the order is grouped by day and the total count of the orders is calculated.
+            int totalOrderCount = orders
+                .Where( order => order.CustomerPhoneNum == customerPhoneNum && order.OrderDateTime.Month == month && order.OrderDateTime.Year == year)
+                .GroupBy(order => order.OrderDateTime.Day)
+                .ToList().Count();
+            
+            //Returns true if the total order count is more than 28 i.e. customer is regular Member.
+            return totalOrderCount >= 26;
+        }
+
+        // This method counts the TotalFreeCoffeeCount of the customer.
+        public int TotalFreeCoffeeCount(string customerPhoneNum)
+        {
+
+            List<Order> orders = _orderServices.GetOrdersFromJsonFile();
+
+            int totalOrderCount = orders
+                .Where(order => order.CustomerPhoneNum == customerPhoneNum)
+                .ToList().Count();
+
+            return totalOrderCount / 10;
         }
     }
 }

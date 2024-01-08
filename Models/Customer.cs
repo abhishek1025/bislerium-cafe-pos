@@ -6,6 +6,7 @@
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }
         public string CustomerPhoneNum { get; set; }
-        public int OrderCount { get; set; } = 1;
+        public bool IsRegularMember { get; set; } = false;
+        public int RedeemedCoffeeCount { get; set; } = 0;
     }
 }
