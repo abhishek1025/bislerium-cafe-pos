@@ -60,7 +60,7 @@ namespace bislerium_cafe_pos.Services
             }).ToList();
 
             //Get the most ordered add-ins with the total quantity
-            List<OrderItem> mostOrderedAddInsItem = coffeeList
+            List<OrderItem> mostOrderedAddInsItem = addInsList
             .GroupBy(addIn => addIn.ItemName)
             .Select(group =>
             {

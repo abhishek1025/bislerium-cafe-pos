@@ -1,10 +1,19 @@
-﻿namespace bislerium_cafe_pos.Utils
+﻿using System.Text.RegularExpressions;
+
+namespace bislerium_cafe_pos.Utils
 {
     internal class AppUtils
     {
         public static string GetDesktopDirectoryPath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            string dbFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "BisleriumCafeDB");
+            
+            if (!Directory.Exists(dbFileDirectory))
+            {
+                Directory.CreateDirectory(dbFileDirectory);
+            }
+
+            return dbFileDirectory;
         }
 
         public static string GetAppUsersFilePath()
@@ -35,6 +44,13 @@
         public static string GetOrderListFilePath()
         {
             return Path.Combine(GetDesktopDirectoryPath(), "orders.json");
+        }
+
+        // Helper method to check if a string contains only numeric characters
+        public static bool IsNumeric(string input)
+        {
+            Regex numericRegex = new Regex("^[0-9]+$");
+            return numericRegex.IsMatch(input);
         }
     }
 }

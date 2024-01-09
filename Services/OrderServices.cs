@@ -28,13 +28,7 @@ namespace bislerium_cafe_pos.Services
             orders.Add(order);
 
             // Folder path where all the files related to app are stored.
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string orderListFilePath = AppUtils.GetOrderListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
 
             var json = JsonSerializer.Serialize(orders);
 

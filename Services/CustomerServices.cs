@@ -32,13 +32,7 @@ namespace bislerium_cafe_pos.Services
         // Saves a list of customers to the JSON file.
         public void SaveCustomerListInJsonFile(List<Customer> customers)
         {
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string customerListFilePath = AppUtils.GetCustomersListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
 
             var json = JsonSerializer.Serialize(customers);
 

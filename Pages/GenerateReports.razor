@@ -89,13 +89,23 @@
             // PDF Setup and Generation
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
             ReportDocument document = new ReportDocument(_report);
-            string filePath = Path.Combine(AppUtils.GetDesktopDirectoryPath(), "Report.PDF");
+
+            string fileName = $"{reportDate}_{_reportType}_Report.PDF";
+
+            string folderPath = Path.Combine(AppUtils.GetDesktopDirectoryPath(), "Reports");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            string filePath = Path.Combine(folderPath, fileName);
+
             document.GeneratePdf(filePath);
 
-            Snackbar.Add("Reports is generated sucessfully. Please look into the folder", Severity.Success);
-
-            // _date = null;
-            // _reportType = null;
+            Snackbar.Add(
+                $"Reports is generated sucessfully. Please look into the folder Desktops/BisleriumCafeDB/Reports",
+                Severity.Success);
 
         } catch(Exception e)
         {

@@ -185,6 +185,13 @@
             _errorMessage = "Please fill up all the fields";
             return;
         }
+
+        if (!AppUtils.IsNumeric(_customer.CustomerPhoneNum))
+        {
+            _errorMessage = "Please enter valid phone number";
+            return;
+        }
+
         _errorMessage = "";
         _step++;
     }
@@ -195,6 +202,12 @@
         if (string.IsNullOrEmpty(_customerPhoneNum))
         {
             _errorMessage = "Please enter your phone number";
+            return;
+        }
+
+        if (!AppUtils.IsNumeric(_customerPhoneNum))
+        {
+            _errorMessage = "Please enter valid phone number";
             return;
         }
 

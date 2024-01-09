@@ -29,13 +29,7 @@ namespace bislerium_cafe_pos.Services
         // Saves a list of users to the JSON file.
         public void SaveAllUsersInJsonFile(List<User> users)
         {
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string appUsersFilePath = AppUtils.GetAppUsersFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
 
             var json = JsonSerializer.Serialize(users);
 

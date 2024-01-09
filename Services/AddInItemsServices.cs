@@ -6,7 +6,7 @@ namespace bislerium_cafe_pos.Services
 {
     public class AddInItemsServices
     {
-        // Creating a list of AddIns objects with proper names and prices in NPR
+        // Creating a list of AddIns objects with proper names and prices in NPR to SEED data when the app loads
         private readonly List<AddInItem> _addInItemsList = new()
         {
             new() { Name = "Extra Sugar", Price = 10.0 },
@@ -43,15 +43,7 @@ namespace bislerium_cafe_pos.Services
         // Saves the AddInItems list to the JSON file
         public void SaveAddInItemsListInJsonFile(List<AddInItem> addInItemList)
         {
-            // Folder path where all the files related to app are stored
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
             string addInItemsListListFilePath = AppUtils.GetAddInItemsListFilePath();
-
-            // Ensure the directory exists or create it if not
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
 
             var json = JsonSerializer.Serialize(addInItemList);
 

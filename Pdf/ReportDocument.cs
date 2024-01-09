@@ -45,9 +45,9 @@ namespace bislerium_cafe_pos.Pdf
         // This method composes the header of the PDF document.
         void ComposeHeader(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
+            var titleStyle = TextStyle.Default.FontSize(16).SemiBold().FontColor(Colors.Blue.Medium);
 
-            string pdfTitle = $"Bislerium Cafe {ReportObj.ReportType} Sales Transaction Report - ({ReportObj.ReportDate})";
+            string pdfTitle = $"Bislerium Cafe Sales and Most Ordered Items Analysis Report- ({ReportObj.ReportDate})";
 
 
             container.Row(row =>
@@ -71,7 +71,7 @@ namespace bislerium_cafe_pos.Pdf
             container.PaddingVertical(20).Column(column =>
             {
 
-                var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
+                var titleStyle = TextStyle.Default.FontSize(14).SemiBold();
 
                 string pdfTitle = $"Top 5 Most Purchased Items - ({ReportObj.ReportDate})";
 
@@ -97,25 +97,29 @@ namespace bislerium_cafe_pos.Pdf
 
                 table.Header(header =>
                 {
-                    //Add-ins heading
-                    header.Cell().Element(ComposeHeadingForTopAddInsItems);
 
                     //Coffee heading
                     header.Cell().Element(ComposeHeadingForTopCoffees);
-                });
 
-               //Add-ins Table
-                table.Cell().Element(ComposeMostPurchasedAddInsItemTable);
+                    //Add-ins heading
+                    header.Cell().Element(ComposeHeadingForTopAddInsItems);
+
+                });
 
                 //Coffee Table
                 table.Cell().Element(ComposeMostPurchasedCoffesTable);
+
+                //Add-ins Table
+                table.Cell().Element(ComposeMostPurchasedAddInsItemTable);
+
+             
             });
         }
 
         // This method composes the header of the Sales Transactions table.
         void ComposeSalesTransactionsHeader(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(14).SemiBold();
 
             string title = $"{ReportObj.ReportType} Sales Transaction Report - ({ReportObj.ReportDate})";
 
@@ -128,8 +132,8 @@ namespace bislerium_cafe_pos.Pdf
                   
                     column.Item().PaddingTop(2).Text(text =>
                     {
-                        text.Span("Total Revenue: ").FontSize(14);
-                        text.Span($"Rs. {ReportObj.TotalRevenue}").FontSize(14);
+                        text.Span("Total Revenue: ").FontSize(13);
+                        text.Span($"Rs. {ReportObj.TotalRevenue}").FontSize(13);
                     });
                 });
             });
@@ -181,7 +185,7 @@ namespace bislerium_cafe_pos.Pdf
                     table.Cell().Element(CellStyle).Text(order.EmployeeUserName);
                     table.Cell().Element(CellStyle).Text($"Rs.{order.OrderTotalAmount}");
                     table.Cell().Element(CellStyle).Text($"Rs.{order.DiscountAmount}");
-                    table.Cell().Element(CellStyle).Text($"Rs.{order.OrderTotalAmount - order.DiscountAmount}");
+                    table.Cell().Element(CellStyle).Text($"Rs.{Math.Round(order.OrderTotalAmount - order.DiscountAmount, 2)}");
 
                     static IContainer CellStyle(IContainer container)
                     {

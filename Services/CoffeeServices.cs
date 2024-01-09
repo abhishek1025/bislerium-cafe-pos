@@ -45,15 +45,7 @@ namespace bislerium_cafe_pos.Services
         // Saves a list of coffees to the JSON file.
         public void SaveCoffeeListInJsonFile(List<Coffee> coffeeList)
         {
-            // Folder path where all the files related to app are stored
-            string appDataDirPath = AppUtils.GetDesktopDirectoryPath();
-
             string coffeeListFilePath = AppUtils.GetCofeeListFilePath();
-
-            if (!Directory.Exists(appDataDirPath))
-            {
-                Directory.CreateDirectory(appDataDirPath);
-            }
 
             var json = JsonSerializer.Serialize(coffeeList);
 
