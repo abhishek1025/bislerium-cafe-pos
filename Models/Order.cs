@@ -11,5 +11,8 @@
         public List<OrderItem> OrderItems { get; set; }
         public double OrderTotalAmount { get; set; }
         public double DiscountAmount { get; set; } = 0;
+
+        //This Property is to show or hide order details in sales transaction table
+        public bool ShowOrderItems { get; set; } = false;
     }
 }

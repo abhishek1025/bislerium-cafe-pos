@@ -27,6 +27,7 @@ else
             <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.OrderID)"> Order ID</MudTableSortLabel></MudTh>
             <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.CustomerName)"> Customer Name</MudTableSortLabel></MudTh>
             <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.OrderDateTime)"> Order DateTime</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.OrderDateTime)"> Order Items</MudTableSortLabel></MudTh>
             <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.OrderTotalAmount)"> Order Total</MudTableSortLabel></MudTh>
             <MudTh> <MudTableSortLabel SortBy="new Func<Order, object>(x => x.DiscountAmount)"> Discount Amount</MudTableSortLabel></MudTh>
             <MudTh> Grand Total</MudTh>
@@ -36,22 +37,62 @@ else
                 <MudTd DataLabel="Customer Name" Class="table-row">
                     <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Size="Size.Small">@context.CustomerName</MudChip>
                 </MudTd>
-                <MudTd DataLabel="Phone Number" Class="table-row">@context.CustomerPhoneNum</MudTd>
-                <MudTd DataLabel="Employee Name" Class="table-row">
-                    @if (context.EmployeeUserName == "administrator")
-                {
-                    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Info" Size="Size.Small">@context.EmployeeUserName.ToUpper()</MudChip>
-                }
-                else
-                {
-                    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Success" Size="Size.Small">@context.EmployeeUserName.ToUpper()</MudChip>
-                }
-            </MudTd>
-            <MudTd DataLabel="DateTime" Class="table-row">@context.OrderDateTime</MudTd>
+
+                <MudTd DataLabel="DateTime" Class="table-row">@context.OrderDateTime</MudTd>
+
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small"
+                               OnClick="@(() => ShowBtnPress(context.OrderID))">
+
+                        @((context.ShowOrderItems == true) ? "Hide" : "Show") Items
+                    </MudButton>
+                </MudTd>
+
                 <MudTd DataLabel="Total Amount" Class="table-row">Rs.@context.OrderTotalAmount</MudTd>
                 <MudTd DataLabel="Discount Amount" Class="table-row">Rs.@context.DiscountAmount</MudTd>
                 <MudTd DataLabel="Grand Total" Class="table-row">Rs.@(context.OrderTotalAmount - context.DiscountAmount)</MudTd>
             </RowTemplate>
+
+            <ChildRowContent>
+                @if (context.ShowOrderItems)
+            {
+                <MudTr>
+                    <td colspan="7">
+                        <MudCard Elevation="0">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                   <MudText Typo="Typo.body1">Details for Order #<Strong>@context.OrderID</Strong></MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent Class="pa-0">
+                                <MudTable Items="@context.OrderItems" Context="OrderItemContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+                                    <ColGroup>
+                                        <col />
+                                        <col />
+                                        <col style="width:200px;" />
+                                    </ColGroup>
+                                    <HeaderContent>
+                                        <MudTh>Item Name</MudTh>
+                                        <MudTh>Item Type</MudTh>
+                                        <MudTh>Item Price</MudTh>
+                                        <MudTh>Quantity</MudTh>
+                                        <MudTh>Total Amount</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Item Name">@OrderItemContext.ItemName</MudTd>
+                                        <MudTd DataLabel="Item Type">@OrderItemContext.ItemType</MudTd>
+                                        <MudTd DataLabel="Item Type">Rs.@OrderItemContext.Price</MudTd>
+                                        <MudTd DataLabel="Item Quantity">@OrderItemContext.Quantity</MudTd>
+                                        <MudTd DataLabel="Total Amount">Rs.@OrderItemContext.TotalPrice</MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </MudCardContent>
+                        </MudCard>
+                    </td>
+                </MudTr>
+                <br/>
+            }
+        </ChildRowContent>
 
             <PagerContent>
                 <MudTablePager />
@@ -62,8 +103,6 @@ else
 
 @code {
     [CascadingParameter] private GlobalState _globalSate { get; set; }
-
-    private List<Order> _orders { get; set; } = new();
 
     private bool dense = true;
     private bool hover = true;
@@ -102,5 +141,11 @@ else
             return true;
 
         return false;
+    }
+
+    private void ShowBtnPress(Guid orderID)
+    {
+        Order order = Elements.First(o => o.OrderID == orderID);
+        order.ShowOrderItems = !order.ShowOrderItems;
     }
 }
