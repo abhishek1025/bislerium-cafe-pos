@@ -15,7 +15,6 @@
         <MudAlert Severity="Severity.Error" Class="my-3">@_errorMessage</MudAlert>
     }
 
-
     <div style="width:400px;" class="mt-5">
         <MudTextField @bind-Value="_customerPhoneNum" Label="Customer Phone Number" Variant="Variant.Outlined" Class="mb-5" Margin="Margin.Dense"></MudTextField>
     </div>
@@ -90,20 +89,20 @@
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">Order Items List</MudText>
                             <MudSpacer />
-                    </ToolBarContent>
+                        </ToolBarContent>
 
 
-                    <HeaderContent>
-                        <MudTh>Item Name</MudTh>
-                        <MudTh>Item Type</MudTh>
-                        <MudTh>Price</MudTh>
-                        <MudTh>Quantity</MudTh>
-                        <MudTh>Total</MudTh>
-                    </HeaderContent>
+                        <HeaderContent>
+                            <MudTh>Item Name</MudTh>
+                            <MudTh>Item Type</MudTh>
+                            <MudTh>Price</MudTh>
+                            <MudTh>Quantity</MudTh>
+                            <MudTh>Total</MudTh>
+                        </HeaderContent>
 
 
-                    <RowTemplate>
-                        <MudTd DataLabel="CoffeeType">@context.ItemName</MudTd>
+                        <RowTemplate>
+                            <MudTd DataLabel="CoffeeType">@context.ItemName</MudTd>
                             <MudTd DataLabel="Item Type">@context.ItemType</MudTd>
                             <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
 
@@ -120,37 +119,36 @@
                     <div class="d-flex justify-content-between mt-4">
 
                         <div class="">
-                            @if (_totalFreeCoffeeCount != 0)
-                            {
-                                <MudText Typo="Typo.h6">Total Free Coffees: @_totalFreeCoffeeCount</MudText>
-                                <MudButton Color="Color.Info" Variant="Variant.Filled" Class="mt-2" OnClick="HandleFreeCoffeeRedeemption">Reedem</MudButton>
-                            }
-                        </div>
-
-                        <div>
-                            <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@Math.Round(_totalAmount, 2)</b></MudText>
-                            <MudText Typo="Typo.subtitle1">Discount Amount: <b>Rs.@Math.Round(_discountAmount, 2)</b></MudText>
-                            <MudDivider DividerType="@DividerType.Middle"/>
-                            <MudText Typo="Typo.subtitle1">Grand Total: <b>Rs.@Math.Round(_totalAmount - _discountAmount, 2)</b></MudText>
-                        </div>
+                            @if (_totalRemainingFreeCoffeeCount != 0)
+                        {
+                            <MudText Typo="Typo.h6">Total Free Coffees: @_totalRemainingFreeCoffeeCount</MudText>
+                            <MudButton Color="Color.Info" Variant="Variant.Filled" Class="mt-2" OnClick="HandleFreeCoffeeRedeemption">Reedem</MudButton>
+                        }
                     </div>
 
-                </MudCardContent>
-
-                <MudDivider />
-
-                
-
-                <MudDivider />
-
-                <div class="py-5 pl-3">
-                <MudButton Color="Color.Default" Variant="Variant.Filled" Class="mr-5" OnClick="handleGoBack">Go Back</MudButton>
-
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="handlePlaceOrder">Place Order</MudButton>
+                    <div>
+                        <MudText Typo="Typo.subtitle1">Total Amount: <b>Rs.@Math.Round(_totalAmount, 2)</b></MudText>
+                        <MudText Typo="Typo.subtitle1">Discount Amount: <b>Rs.@Math.Round(_discountAmount, 2)</b></MudText>
+                        <MudDivider DividerType="@DividerType.Middle" />
+                        <MudText Typo="Typo.subtitle1">Grand Total: <b>Rs.@Math.Round(_totalAmount - _discountAmount, 2)</b></MudText>
+                    </div>
                 </div>
 
-            </MudCard>
-        </MudContainer>
+            </MudCardContent>
+
+            <MudDivider />
+
+
+
+            <MudDivider />
+
+            <div class="py-5 pl-3">
+                <MudButton Color="Color.Default" Variant="Variant.Filled" Class="mr-5" OnClick="handleGoBack">Go Back</MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="handlePlaceOrder">Place Order</MudButton>
+            </div>
+
+        </MudCard>
+    </MudContainer>
 
 }
 
@@ -168,7 +166,6 @@
     private bool striped = true;
     private bool bordered = true;
 
-
     private string _customerPhoneNum { get; set; }
     private Customer _customer { get; set; }
 
@@ -177,9 +174,8 @@
     private int _step = 1;
     private bool _customerIsMember { get; set; } = false;
 
-    private int _totalFreeCoffeeCount { get; set; } = 0;
+    private int _totalRemainingFreeCoffeeCount { get; set; } = 0;
     public double _discountAmount { get; set; } = 0;
-
 
     //Validates the customer details to place order
     private void validateUserDetails()
@@ -214,10 +210,22 @@
         }
 
         //Retrives membership benefits if customer is a member
-        _totalFreeCoffeeCount = CustomerServices.TotalFreeCoffeeCount(_customer.CustomerPhoneNum);
+        int countTotalFreeCoffee = CustomerServices.TotalFreeCoffeeCount(_customer.CustomerPhoneNum);
+
+        // _totalRemainingFreeCoffeeCount = countTotalFreeCoffee;
+        if (countTotalFreeCoffee < 0)
+        {
+            _totalRemainingFreeCoffeeCount = 0;
+        }
+        else
+        {
+            _totalRemainingFreeCoffeeCount = countTotalFreeCoffee - _customer.RedeemedCoffeeCount;
+        }
+
         bool isCustomerRegularMember = CustomerServices.CheckIfCustomerIsReguralMember(_customer.CustomerPhoneNum);
 
-        if(isCustomerRegularMember){
+        if (isCustomerRegularMember)
+        {
             _discountAmount = _totalAmount * 0.1;
         }
 
@@ -231,17 +239,35 @@
     // Handles the Coffee Redeemption after every 10 purchase
     private void HandleFreeCoffeeRedeemption()
     {
-        Dictionary<string, double> membershipBenifies = OrderItemServices.RedeemFreeCoffees(_totalFreeCoffeeCount, _globalState.OrderItems);
+        Dictionary<string, double> membershipBenifies = OrderItemServices.RedeemFreeCoffees(_totalRemainingFreeCoffeeCount, _globalState.OrderItems);
 
         //Converting double to integer
         int redeemedCoffeeCount = (int)membershipBenifies["redeemedCoffeeCount"];
-        _discountAmount = membershipBenifies["discount"];
+        double discountFromRedeemption = membershipBenifies["discount"];
+
+        /*
+        * Here, if the sum of dicount from reedeemed coffee and membership discount is greater than order total,
+        * grand total will be -ve. So, whichever discount amount is greater (either reedeemed coffee discount and membership discount ), that will be
+        * provided to customer.
+        * Note: Initially, the _discount stores discount from membership
+        */
+        if (_discountAmount == 0)
+        {
+            _discountAmount = discountFromRedeemption;
+
+        }
+        else if ((discountFromRedeemption + _discountAmount) > _totalAmount)
+        {
+            if (_discountAmount > discountFromRedeemption)
+            {
+                Snackbar.Add("Unable to reddem the coffe at the moment", Severity.Error);
+                return; 
+            }
+        }
 
         CustomerService.UpdateRedeemedCoffeeCount(_customer.CustomerPhoneNum, redeemedCoffeeCount);
-
         Snackbar.Add($"{redeemedCoffeeCount} coffees are redeemed.", Severity.Success);
     }
-
 
     protected override void OnInitialized()
     {
@@ -273,18 +299,16 @@
                 CustomerServices.AddCustomer(_customer);
             }
 
-
             Order order = new()
-            {
-                CustomerID = _customer.CustomerID,
-                CustomerName = _customer.CustomerName,
-                CustomerPhoneNum = _customer.CustomerPhoneNum,
-                EmployeeUserName = _globalState.CurrentUser.UserName,
-                OrderTotalAmount = Math.Round(_totalAmount, 2),
-                OrderItems = _globalState.OrderItems,
-                DiscountAmount = Math.Round(_discountAmount, 2),
-            };
-
+                {
+                    CustomerID = _customer.CustomerID,
+                    CustomerName = _customer.CustomerName,
+                    CustomerPhoneNum = _customer.CustomerPhoneNum,
+                    EmployeeUserName = _globalState.CurrentUser.UserName,
+                    OrderTotalAmount = Math.Round(_totalAmount, 2),
+                    OrderItems = _globalState.OrderItems,
+                    DiscountAmount = Math.Round(_discountAmount, 2),
+                };
 
             OrderServices.PlaceOrder(order);
 
@@ -294,7 +318,8 @@
 
             NavigationManager.NavigateTo("/cart-items");
 
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Snackbar.Add(e.Message, Severity.Error);
         }
