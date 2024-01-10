@@ -19,7 +19,6 @@
                     <MudNavLink Match="NavLinkMatch.All" Href="/sales-transactions" Icon="@Icons.Material.Filled.Receipt">Sales Transactions</MudNavLink>
                 }
 
-                <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
 
                 <MudNavGroup Title="Items" Icon="@Icons.Material.Filled.Category" Expanded="true">
                     <MudNavLink Match="NavLinkMatch.All" Href="/coffee-list" Icon="@Icons.Material.Filled.LocalCafe">Coffee List</MudNavLink>
@@ -27,6 +26,9 @@
                 </MudNavGroup>
 
                 <MudNavLink Match="NavLinkMatch.All" Href="/cart-items" Icon="@Icons.Material.Filled.ShoppingCart">Order Cart</MudNavLink>
+
+                <MudNavLink Match="NavLinkMatch.All" Href="/change-password" Icon="@Icons.Material.Filled.VpnKey">Change Password</MudNavLink>
+
 
                 @if (_isUserAdmin)
                 {

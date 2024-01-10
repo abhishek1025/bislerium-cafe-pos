@@ -278,7 +278,9 @@
             }
         }
 
-        CustomerService.UpdateRedeemedCoffeeCount(_customer.CustomerPhoneNum, redeemedCoffeeCount);
+
+        _customer.RedeemedCoffeeCount = redeemedCoffeeCount;
+
         Snackbar.Add($"{redeemedCoffeeCount} coffees are redeemed.", Severity.Success);
     }
 
@@ -324,6 +326,8 @@
                 };
 
             OrderServices.PlaceOrder(order);
+            CustomerService.UpdateRedeemedCoffeeCount(_customer.CustomerPhoneNum, _customer.RedeemedCoffeeCount);
+
 
             Snackbar.Add("Order is Placed Sucessfully", Severity.Success);
 
