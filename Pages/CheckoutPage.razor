@@ -226,7 +226,7 @@
         int countTotalFreeCoffee = CustomerServices.TotalFreeCoffeeCount(_customer.CustomerPhoneNum);
 
         // _totalRemainingFreeCoffeeCount = countTotalFreeCoffee;
-        if (countTotalFreeCoffee < 0)
+        if (countTotalFreeCoffee <= 0)
         {
             _totalRemainingFreeCoffeeCount = 0;
         }
