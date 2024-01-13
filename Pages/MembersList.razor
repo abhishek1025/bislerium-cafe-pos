@@ -1,0 +1,103 @@
+﻿@page "/members"
+
+@inject CustomerServices CustomerServices
+
+<style>
+    .table-row {
+        font-size: 14px;
+    }
+</style>
+
+
+@if (Elements.Count() == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">No Members has registered yet !!</MudAlert>
+}
+else
+{
+    <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
+              Filter="new Func<Customer,bool>(FilterFunc1)"
+              HorizontalScrollbar="true"
+              SortLabel="Sort By">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Members List</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.CustomerID)">Member ID</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.CustomerName)"> Member Name</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.CustomerPhoneNum)">Phone Number</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.CustomerAddress)">Address</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.RegistrationDate)">Registration Date</MudTableSortLabel></MudTh>
+            <MudTh> <MudTableSortLabel SortBy="new Func<Customer, object>(x => x.RedeemedCoffeeCount)"> Reedeemed Coffee Count</MudTableSortLabel></MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd  Class="table-row">@context.CustomerID</MudTd>
+
+            <MudTd  Class="table-row">
+                <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Size="Size.Small">@context.CustomerName</MudChip>
+            </MudTd>
+
+            <MudTd Class="table-row">@context.CustomerPhoneNum</MudTd>
+
+            <MudTd  Class="table-row">@context.CustomerAddress</MudTd>
+            <MudTd  Class="table-row">@context.RegistrationDate</MudTd>
+            <MudTd  Class="table-row">@context.RedeemedCoffeeCount</MudTd>
+        </RowTemplate>
+
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    [CascadingParameter] private GlobalState _globalSate { get; set; }
+
+    private bool dense = true;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+
+    private IEnumerable<Customer> Elements = new List<Customer>();
+
+    protected override void OnInitialized()
+    {
+        Elements = CustomerServices.GetCustomerListFromJsonFile();
+        _globalSate.AppBarTitle = "Members List";
+    }
+
+    private bool FilterFunc1(Customer element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Customer element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        if (element.CustomerID.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.CustomerName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.CustomerAddress.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.CustomerPhoneNum.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.RedeemedCoffeeCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.RegistrationDate.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+}
+

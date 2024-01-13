@@ -8,5 +8,6 @@
         public string CustomerPhoneNum { get; set; }
         public bool IsRegularMember { get; set; } = false;
         public int RedeemedCoffeeCount { get; set; } = 0;
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
     }
 }

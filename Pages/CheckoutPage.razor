@@ -52,76 +52,77 @@
                 <MudText Typo="Typo.h4" Align="Align.Center">Bislerum Cafe Bill</MudText>
                 <MudSpacer />
                 <MudText Typo="Typo.body1" Align="Align.Center">Date: @DateTime.Now</MudText>
-                </MudCardHeader>
+            </MudCardHeader>
 
-                <MudDivider />
-
-
-                <MudCardContent>
-                    <MudText Typo="Typo.h6">Customer Information:</MudText>
-
-                    <MudGrid Spacing="3">
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.body2">Customer Name: @_customer.CustomerName</MudText>
-                        </MudItem>
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.body2">Phone Number: @_customer.CustomerPhoneNum</MudText>
-                        </MudItem>
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.body2">Address: @_customer.CustomerAddress</MudText>
-                        </MudItem>
-                    </MudGrid>
+            <MudDivider />
 
 
-                </MudCardContent>
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Customer Information:</MudText>
 
-                <MudDivider />
-
-
-                <MudCardContent>
-                    <MudTable Items="@Elements"
-                              Dense="@dense"
-                              Hover="@hover"
-                              Bordered="@bordered"
-                              Striped="@striped"
-                              Class="border-0 shadow-none">
-
-                        <ToolBarContent>
-                            <MudText Typo="Typo.h6">Order Items List</MudText>
-                            <MudSpacer />
-                        </ToolBarContent>
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.body2">Customer Name: @_customer.CustomerName</MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.body2">Phone Number: @_customer.CustomerPhoneNum</MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.body2">Address: @_customer.CustomerAddress</MudText>
+                    </MudItem>
+                </MudGrid>
 
 
-                        <HeaderContent>
-                            <MudTh>Item Name</MudTh>
-                            <MudTh>Item Type</MudTh>
-                            <MudTh>Price</MudTh>
-                            <MudTh>Quantity</MudTh>
-                            <MudTh>Total</MudTh>
-                        </HeaderContent>
+            </MudCardContent>
+
+            <MudDivider />
 
 
-                        <RowTemplate>
-                            <MudTd DataLabel="CoffeeType">@context.ItemName</MudTd>
-                            <MudTd DataLabel="Item Type">@context.ItemType</MudTd>
-                            <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
+            <MudCardContent>
+                <MudTable Items="@Elements"
+                          Dense="@dense"
+                          Hover="@hover"
+                          Bordered="@bordered"
+                          Striped="@striped"
+                          Class="border-0 shadow-none">
 
-                            <MudTd DataLabel="Quantity">
-                                @context.Quantity
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Order Items List</MudText>
+                        <MudSpacer />
+                    </ToolBarContent>
+
+
+                    <HeaderContent>
+                        <MudTh>Item Name</MudTh>
+                        <MudTh>Item Type</MudTh>
+                        <MudTh>Price</MudTh>
+                        <MudTh>Quantity</MudTh>
+                        <MudTh>Total</MudTh>
+                    </HeaderContent>
+
+
+                    <RowTemplate>
+                        <MudTd DataLabel="CoffeeType">@context.ItemName</MudTd>
+                        <MudTd DataLabel="Item Type">@context.ItemType</MudTd>
+                        <MudTd DataLabel="Price">Rs.@context.Price</MudTd>
+
+                        <MudTd DataLabel="Quantity">
+                            @context.Quantity
                         </MudTd>
 
                         <MudTd DataLabel="Price">Rs.@context.TotalPrice</MudTd>
 
-                        </RowTemplate>
+                    </RowTemplate>
 
-                    </MudTable>
+                </MudTable>
 
-                    <div class="d-flex justify-content-between mt-4">
+                <div class="d-flex justify-content-between mt-4">
 
-                        <div class="">
-                            @if (_totalRemainingFreeCoffeeCount != 0)
+                    <div class="">
+                        @if (_totalRemainingFreeCoffeeCount != 0)
                         {
-                            <MudText Typo="Typo.h6">Total Free Coffees: @_totalRemainingFreeCoffeeCount</MudText>
+                            <MudText Typo="Typo.h6">
+                                Total Free Coffees: @(_totalRemainingFreeCoffeeCount)</MudText>
                             <MudButton Color="Color.Info" Variant="Variant.Filled" Class="mt-2" OnClick="HandleFreeCoffeeRedeemption">Reedem</MudButton>
                         }
                     </div>
@@ -193,6 +194,15 @@
         }
 
         _errorMessage = "";
+
+        Customer _c = CustomerService.GetCustomerByPhoneNum(_customer.CustomerPhoneNum);
+
+        if (_c != null) {
+            _customerPhoneNum = _c.CustomerPhoneNum;
+            handleCheckMembership();
+            return;
+        }
+
         _step++;
     }
 
@@ -235,7 +245,10 @@
             _totalRemainingFreeCoffeeCount = countTotalFreeCoffee - _customer.RedeemedCoffeeCount;
         }
 
+
         bool isCustomerRegularMember = CustomerServices.CheckIfCustomerIsReguralMember(_customer.CustomerPhoneNum);
+
+        //int isCustomerRegularMember = _isCustomerRegularMember;
 
         if (isCustomerRegularMember)
         {
@@ -264,20 +277,33 @@
         * provided to customer.
         * Note: Initially, the _discount stores discount from membership
         */
+
+        double totalDiscountAmount = discountFromRedeemption + _discountAmount;
+
         if (_discountAmount == 0)
         {
             _discountAmount = discountFromRedeemption;
 
         }
-        else if ((discountFromRedeemption + _discountAmount) > _totalAmount)
+        else if (totalDiscountAmount > _totalAmount)
         {
             if (_discountAmount > discountFromRedeemption)
             {
                 Snackbar.Add("Unable to reddem the coffe at the moment", Severity.Error);
-                return; 
+                return;
+            }
+            else
+            {
+                _discountAmount = discountFromRedeemption;
             }
         }
 
+        if(totalDiscountAmount <= _totalAmount)
+        {
+            _discountAmount = totalDiscountAmount;
+        }
+
+        _totalRemainingFreeCoffeeCount = _totalRemainingFreeCoffeeCount - redeemedCoffeeCount;
 
         _customer.RedeemedCoffeeCount = redeemedCoffeeCount;
 
@@ -309,21 +335,22 @@
     {
         try
         {
+
             if (!_customerIsMember)
             {
                 CustomerServices.AddCustomer(_customer);
             }
 
             Order order = new()
-                {
-                    CustomerID = _customer.CustomerID,
-                    CustomerName = _customer.CustomerName,
-                    CustomerPhoneNum = _customer.CustomerPhoneNum,
-                    EmployeeUserName = _globalState.CurrentUser.UserName,
-                    OrderTotalAmount = Math.Round(_totalAmount, 2),
-                    OrderItems = _globalState.OrderItems,
-                    DiscountAmount = Math.Round(_discountAmount, 2),
-                };
+            {
+                CustomerID = _customer.CustomerID,
+                CustomerName = _customer.CustomerName,
+                CustomerPhoneNum = _customer.CustomerPhoneNum,
+                EmployeeUserName = _globalState.CurrentUser.UserName,
+                OrderTotalAmount = Math.Round(_totalAmount, 2),
+                OrderItems = _globalState.OrderItems,
+                DiscountAmount = Math.Round(_discountAmount, 2),
+            };
 
             OrderServices.PlaceOrder(order);
 

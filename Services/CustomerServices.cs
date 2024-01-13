@@ -83,7 +83,7 @@ namespace bislerium_cafe_pos.Services
 
             // This condition is for:
             // If month is January, then the previous month is December of the previous year.
-            int month = DateTime.Now.Month - 1;
+            int month = DateTime.Now.Month == 1 ? 12 : DateTime.Now.Month;
             int year = month == 12 ? DateTime.Now.Year - 1 : DateTime.Now.Year;
 
             // At first, the order is filtered by the customer's phone number and previous month.
